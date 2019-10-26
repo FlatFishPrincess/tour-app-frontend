@@ -6,8 +6,11 @@ import {
   Redirect,
   Link,
   withRouter,
+  Switch
 } from 'react-router-dom';
 import Login from './components/Login/Login';
+import { connect } from 'react-redux';
+import Routes from './components/Routes';
 
 export const fakeAuth = {
   isAuthenticated: false,
@@ -37,37 +40,39 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   )
 }
 
-const AuthButton = withRouter(({ history }) => (
-  fakeAuth.isAuthenticated === true
-  ? <p>Welcome! <button onClick={() => { fakeAuth.signOut(() => history.push("/"))}} >Sign out</button></p>
-  : <p>You r not logged in</p>
-))
-
-function App() {
+const App = (props) =>  {
   return (
     <Router>
-      <div>
-        {/* <AuthButton /> */}
-        <ul>
-          <li><Link to="/public">Public</Link></li>
-          <li><Link to="/protected">Protected</Link></li>
-        </ul>
-      </div>
-      <div>
-        <Route path="/public" component={Dashboard} />
+      <Switch>
+        <Route exact path="/" render={() => <Redirect to="/app/dashboard" />} />
+        <Route
+          exact
+          path="/app"
+          render={() => <Redirect to="/app/dashboard" />}
+        />
+        <Route path="/public" component={Routes} />
         <Route path="/login" component={Login} />
-        <PrivateRoute path="/protected" component={Protected} />
-      </div>
+        <Route path="/app" component={Routes} />
+        {/* <PrivateRoute path="/protected" component={Protected} /> */}
+      </Switch>
     </Router>
   );
 }
-const Protected = () => {
-  return <h2>Protected!</h2>
-}
+
+// const Protected = () => {
+//   return <h2>Protected!</h2>
+// }
 
 const Dashboard = () => {
   return <h2>App!</h2>;
 }
 
+const mapStateToProps = ({ users }) => {
+  console.log('state,', users);
+  return ({
+    users
+  })
+}
 
-export default App;
+export default connect(mapStateToProps, null)(App);
+

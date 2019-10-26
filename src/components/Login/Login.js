@@ -13,6 +13,20 @@ import { withRouter, Redirect } from "react-router-dom";
 import { fakeAuth } from '../../App';
 import { styles } from './styles';
 
+const TabPanel = (props) => {
+  const { children, activeTab, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      hidden={activeTab !== index}
+      {...other}
+    >
+      <Box flexDirection="column" display="flex" p={3}>{children}</Box>
+    </Typography>
+  );
+}
+
 class Login extends React.Component {
   state = {
     redirectToReferrer: false,
@@ -31,19 +45,6 @@ class Login extends React.Component {
     this.setState({ activeTab });
   }
 
-  TabPanel = (props) => {
-    const { children, activeTab, index, ...other } = props;
-  
-    return (
-      <Typography
-        component="div"
-        hidden={activeTab !== index}
-        {...other}
-      >
-        <Box flexDirection="column" display="flex" p={3}>{children}</Box>
-      </Typography>
-    );
-  }
 
   render() {
     const { classes } = this.props;
@@ -60,17 +61,19 @@ class Login extends React.Component {
           <img src="https://source.unsplash.com/user/jplenio/1600x900/" alt="logo" className={classes.loginImage} />
         </div>
         <div className={classes.formContainer}>
-         <Tabs
-          value={activeTab}
-          onChange={this.handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-        >
-          <Tab label="Sign In" />
-          <Tab label="Register" />
-        </Tabs>
-        <this.TabPanel activeTab={activeTab} index={0}>
+          <div>
+            <Tabs
+              value={activeTab}
+              onChange={this.handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Sign In" />
+              <Tab label="Register" />
+            </Tabs>
+          </div>
+        <TabPanel activeTab={activeTab} index={0}>
           <Typography variant="h3" className={classes.greeting}>
             Welcome!
           </Typography>
@@ -95,10 +98,33 @@ class Login extends React.Component {
           >
             Log in
           </Button>
-        </this.TabPanel>
-        <this.TabPanel activeTab={activeTab} index={1}>
-          Register!
-        </this.TabPanel>
+        </TabPanel>
+        <TabPanel activeTab={activeTab} index={1}>
+          <Typography variant="h3" className={classes.greeting}>
+            Welcome!
+          </Typography>
+          <Typography variant="h4" className={classes.subGreeting}>
+            Register
+          </Typography>
+          <TextField
+            label="Username"
+            margin="normal"
+          />
+          <TextField
+            label="Password"
+            type="password"
+            margin="normal"
+          />
+          <Button
+            onClick={this.login}
+            variant="contained"
+            color="primary"
+            size="large"
+            className={classes.signInButton}
+          >
+            Register
+          </Button>
+        </TabPanel>
         </div>
       </Grid>
     )
