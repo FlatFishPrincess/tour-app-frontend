@@ -1,7 +1,8 @@
 import React from 'react'
 import Select from 'react-select';
-import { makeStyles, Paper, Grid, Typography, Box, Container, TextareaAutosize, TextField } from '@material-ui/core';
+import { makeStyles, Paper, Grid, Typography, Box, Container, TextField, Button } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
+import Upload from './Components/Upload';
 
 const suggestions = [
   { label: 'Afghanistan' },
@@ -30,9 +31,15 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
+  padding: {
+    padding: theme.spacing(3)
+  },
   title: {
     margin: theme.spacing(3)
   },
+  label: {
+    marginBottom: theme.spacing(1)
+  }
 }));
 
 
@@ -40,8 +47,11 @@ export default function Review() {
   const [country, setCountry] = React.useState(null);
   const [hover, setHover] = React.useState(-1);
   const [rating, setRating] = React.useState(-1);
-  const classes = useStyles();
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [files, setFiles] = React.useState([]);
 
+  const classes = useStyles();
+  
   const handleChangeCountry = value => {
     setCountry(value);
   };
@@ -54,54 +64,88 @@ export default function Review() {
     setRating(value);
   }
 
+  const handleClickOpenDialog = () => {
+    setDialogOpen(true);
+  }
+
+  const handleClickCloseDialog = () => {
+    setDialogOpen(false);
+  }
+
+  const onFilesAdded = (file) => {
+    setFiles(files.concat(file));
+  }
+
+  const renderUploadDialog = () => {
+    return (
+      <Upload 
+        open={dialogOpen}
+        handleClose={handleClickCloseDialog}
+        onFilesAdded={onFilesAdded}
+        files={files}
+      />
+    )
+  }
+
   return (
-    <Container maxWidth="md">
-      <div className={classes.root}>
-        <Paper>
-          <Typography align="center" variant="h4" className={classes.title}>Write Review!</Typography>
-          <Box m={2}>
-            <Typography component="label" variant="h6" className={classes.label}>Select Country</Typography>
-            <Select
-              inputId="react-select-single"
-              placeholder="Search a country (start with a)"
-              options={suggestions}
-              value={country}
-              onChange={handleChangeCountry}
-            />
-          </Box>
-          <Box m={2}>
-            <Typography component="label" variant="h6">Title</Typography>
-            <TextField
-              label="Write Title here"
-              margin="normal"
-              fullWidth
-              />
-          </Box>
-          <Box m={2}>
-          <Typography component="label" variant="h6" className={classes.label}>Wrtie Your Review Title Here</Typography>
-            <TextField
-              placeholder="Write review here"
-              multiline
-              fullWidth
-              rows={10}
-              variant="outlined"
-            />
-          </Box>
-          <Box m={2}>
-            <Typography component="label" variant="h6" className={classes.label}>Rating</Typography>
-            <Box display="flex">
-              <Rating
-                name="hover-side"
-                value={rating}
-                precision={0.5}
-                onChangeActive={handleChangeRatingActive}
-                onChange={handleChangeRating}
-              />
-              <Typography ml={3}>{labels[hover !== -1 ? hover : rating]}</Typography>
+    <React.Fragment>
+      <Container maxWidth="md">
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <Typography align="center" variant="h4" className={classes.title}>Write Review!</Typography>
+            <Box m={2}>
+              <Typography component="label" variant="h6" className={classes.label}>Rating</Typography>
+              <Box display="flex">
+                <Rating
+                  name="hover-side"
+                  value={rating}
+                  precision={0.5}
+                  onChangeActive={handleChangeRatingActive}
+                  onChange={handleChangeRating}
+                />
+                <Box ml={3}><Typography>{labels[hover !== -1 ? hover : rating]}</Typography></Box>
+              </Box>
             </Box>
-          </Box>
-        </Paper>
-      </div>
-    </Container>
+            <Box m={2}>
+              <Typography component="label" variant="h6" className={classes.label}>Select Country</Typography>
+              <Select
+                inputId="react-select-single"
+                placeholder="Search a country (start with a)"
+                options={suggestions}
+                value={country}
+                onChange={handleChangeCountry}
+              />
+            </Box>
+            <Box m={2}>
+              <Typography component="label" variant="h6">Title</Typography>
+              <TextField
+                label="Write Title here"
+                fullWidth
+                />
+            </Box>
+            <Box m={2}>
+            <Typography component="label" variant="h6" className={classes.label}>Wrtie Your Review Title Here</Typography>
+              <TextField
+                multiline
+                fullWidth
+                rows={10}
+                variant="outlined"
+              />
+            </Box>
+            <Box m={3}>
+              <Button variant="outlined" color="primary" onClick={handleClickOpenDialog}>
+                Upload Pictures
+              </Button>
+            </Box>
+            <Box m={3} p={3} display="flex" justifyContent="center">
+              <Button variant="contained" color="primary" className={classes.button}>
+                Save
+              </Button>
+            </Box>
+          </Paper>
+        </div>
+      </Container>
+      {renderUploadDialog()}
+    </React.Fragment>  
   )
 }
