@@ -73,7 +73,6 @@ export default function Header() {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
             </Menu>
           </div>
       </Toolbar>
