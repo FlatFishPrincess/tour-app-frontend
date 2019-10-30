@@ -41,7 +41,7 @@ export default function ProfileCard() {
             >
               profile detail will be displayed here! 
               This is Jiweon Park, I love codeing and traveling! 
-              Wannt be a nomad coder :)
+              Wannt be a nomad coder
             </Typography>
           </div>
           <Avatar

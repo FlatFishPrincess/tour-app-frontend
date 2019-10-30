@@ -50,7 +50,7 @@ const App = (props) =>  {
           path="/app"
           render={() => <Redirect to="/app/dashboard" />}
         />
-        <Route path="/public" component={Routes} />
+        <Route path="/admin" component={Routes} />
         <Route path="/login" component={Login} />
         <Route path="/app" component={Routes} />
         {/* <PrivateRoute path="/protected" component={Protected} /> */}

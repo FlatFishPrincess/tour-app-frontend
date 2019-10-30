@@ -11,6 +11,7 @@ import Header from "./Header/Header";
 import Review from './Review/Review';
 import Dashboard from "./Dashboard/Dashboard";
 import Profile from './Profile/Profile';
+import Admin from './Admin/Admin';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -41,6 +42,7 @@ const Routes = (props) => {
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/write-review" component={Review} />
               <Route path="/app/profile" component={Profile} />
+              <Route path="/admin/dashboard" component={Admin} />
             </Switch>
           </div>
         </div>
