@@ -7,7 +7,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minHeight: 'fit-content'
+    minHeight: 'fit-content',
+    marginBottom: theme.spacing(1),
   },
   avatar: {
     width: 60,
@@ -29,13 +30,13 @@ export default function SidebarProfile() {
   };
 
   return (
-    <div>
+    <div className={classes.root}>
       <Avatar
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
         src={user.avatar && user.avatar}
-        to="/settings"
+        to="/app/profile"
       >
         {user.avatar ? '' : user.name.substring(0,2)}
       </Avatar>

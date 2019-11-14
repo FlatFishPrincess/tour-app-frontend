@@ -8,13 +8,11 @@ import {
 } from "react-router-dom";
 
 import Header from "./Header/Header";
-// import Sidebar from "../Sidebar";
 import Review from './Review/Review';
 import Dashboard from "./Dashboard/Dashboard";
 import Profile from './Profile/Profile';
 import Admin from './Admin/Admin';
 import Sidebar from './Sidebar/Sidebar';
-// import { useTheme } from '@material-ui/styles';
 import { makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
