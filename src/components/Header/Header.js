@@ -4,24 +4,26 @@ import { Menu as MenuIcon, AccountCircle } from '@material-ui/icons';
 import { withRouter } from 'react-router-dom';
 import { fakeAuth } from '../../App';
 import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    boxShadow: 'none'
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
+  flexGrow: {
+    flexGrow: 1
   },
-  title: {
-    flexGrow: 1,
-  },
+  signOutButton: {
+    marginLeft: theme.spacing(1)
+  }
 }));
 
-export default function Header() {
+export default function Header(props) {
   // const [auth, setAuth] = React.useState(true);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const { className, onSidebarOpen, ...rest } = props;
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -38,12 +40,15 @@ export default function Header() {
   // ))
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
+    // <div className={classes.root}>
+      <AppBar
+       className={clsx(classes.root, className)}
+      >
       <Toolbar>
         <IconButton edge="start" color="inherit" aria-label="menu">
           <MenuIcon />
         </IconButton>
+        {/* <div className={classes.flexGrow} /> */}
         <Typography variant="h6" className={classes.title}>
           Tour Review
         </Typography>
@@ -77,8 +82,7 @@ export default function Header() {
           </div>
       </Toolbar>
     </AppBar>
-    </div>
-
+    // </div>
   )
 }
       

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import clsx from 'clsx';
 import {
   Route,
   Switch,
@@ -12,41 +13,67 @@ import Review from './Review/Review';
 import Dashboard from "./Dashboard/Dashboard";
 import Profile from './Profile/Profile';
 import Admin from './Admin/Admin';
-
-import { makeStyles } from '@material-ui/core';
+import Sidebar from './Sidebar/Sidebar';
+// import { useTheme } from '@material-ui/styles';
+import { makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex",
-    maxWidth: "100vw",
-    overflowX: "hidden",
+    paddingTop: 56,
+    height: '100%',
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 64
+    }
+  },
+  shiftContent: {
+    paddingLeft: 240
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    width: `calc(100vw - 240px)`,
-    minHeight: "100vh",
-  },
+    height: '100%'
+  }
 }));
+
 
 const Routes = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const [openSidebar, setOpenSidebar] = useState(false);
+  
+  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
+    defaultMatches: true
+  });
 
+  const shouldOpenSidebar = isDesktop ? true : openSidebar;
+  
+  const handleSidebarOpen = () => {
+    setOpenSidebar(true);
+  };
+
+  const handleSidebarClose = () => {
+    setOpenSidebar(false);
+  };
   return (
-    <div>
-      <>
-        <Header  />
-        <div className={classes.root}>
-          <div className={classes.content}>
-            <Switch>
-              <Route path="/app/dashboard" component={Dashboard} />
-              <Route path="/app/write-review" component={Review} />
-              <Route path="/app/profile" component={Profile} />
-              <Route path="/admin/dashboard" component={Admin} />
-            </Switch>
-          </div>
-        </div>
-      </>
+    <div
+      className={clsx({
+        [classes.root]: true,
+        [classes.shiftContent]: isDesktop
+      })}
+    >
+      <Header onSidebarOpen={handleSidebarOpen} />
+      <Sidebar
+        onClose={handleSidebarClose}
+        open={shouldOpenSidebar}
+        variant={isDesktop ? 'persistent' : 'temporary'}
+      />
+      <main className={classes.content}>
+        <Switch>
+          <Route path="/app/dashboard" component={Dashboard} />
+          <Route path="/app/write-review" component={Review} />
+          <Route path="/app/profile" component={Profile} />
+          <Route path="/app/review/:id" component={Review} />
+          <Route path="/admin/dashboard" component={Admin} />
+        </Switch>
+      </main>
     </div>
   );
 }
