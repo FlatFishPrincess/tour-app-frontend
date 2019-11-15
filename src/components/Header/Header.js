@@ -45,13 +45,10 @@ export default function Header(props) {
        className={clsx(classes.root, className)}
       >
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        {/* <div className={classes.flexGrow} /> */}
         <Typography variant="h6" className={classes.title}>
           Tour Review
         </Typography>
+        <div className={classes.flexGrow} />
           <div>
             <IconButton
               aria-label="account of current user"
@@ -77,7 +74,7 @@ export default function Header(props) {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem component="a" href='/app/profile'>Profile</MenuItem>
             </Menu>
           </div>
       </Toolbar>
