@@ -61,11 +61,8 @@ const App = (props) =>  {
   );
 }
 
-const mapStateToProps = ({ users }) => {
-  console.log('state,', users);
-  return ({
-    users
-  })
-}
+const mapStateToProps = state => ({
+  userId: state.users.userId
+});
 
 export default connect(mapStateToProps, null)(App);

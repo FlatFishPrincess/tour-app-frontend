@@ -13,11 +13,13 @@ import {
   IconButton
 } from "@material-ui/core";
 import { withRouter, Redirect } from "react-router-dom";
-import { fakeAuth } from '../../App';
+// import { fakeAuth } from '../../App';
 import { styles } from './styles';
 import clsx from 'clsx';
 import axios from 'axios';
 import { Close as CloseIcon } from '@material-ui/icons';
+import { connect } from 'react-redux';
+import { addUserId } from '../../shared/actions/actions';
 
 const TabPanel = (props) => {
   const { children, activeTab, index, ...other } = props;
@@ -48,13 +50,13 @@ class Login extends React.Component {
     "profile": ""
   }
 
-  login = () => {
-    fakeAuth.authenticate(() => {
-      this.setState(() => ({
-        redirectToReferrer: true
-      }))
-    })
-  }
+  // login = () => {
+  //   fakeAuth.authenticate(() => {
+  //     this.setState(() => ({
+  //       redirectToReferrer: true
+  //     }))
+  //   })
+  // }
 
   onChangeHandleTabs = (e, activeTab) => {
     this.setState({ activeTab });
@@ -84,7 +86,7 @@ class Login extends React.Component {
     e.preventDefault();
     const { username, password } = this.state;
     const userId = `${username}123`;
-    const LOGIN_USER_URL = 'http://localhost:3000/create/user';
+    const LOGIN_USER_URL = 'http://localhost:3000/login/user';
     axios({
       method: 'post',
       url: LOGIN_USER_URL,
@@ -92,13 +94,13 @@ class Login extends React.Component {
         'Accept': 'application/json'
       },  
       data: {
-        userId,
-        password
+        userId: userId,
+        password: password
       }
     })
     .then(r => {
-      console.log('response?', r);
-      this.setState({ snackbarOpen: true })
+      this.props.addUserId(r.data[0]);
+      this.setState({ redirectToReferrer: true })
     })
     .catch(e => console.log(e))
   }
@@ -192,7 +194,7 @@ class Login extends React.Component {
                 onChange={this.onChangeRegisterFields}
               />
               <Button
-                onClick={this.login}
+                onClick={this.onClickeLoginButton}
                 variant="contained"
                 color="primary"
                 size="large"
@@ -276,5 +278,19 @@ class Login extends React.Component {
   }
 }
 
+const mapDispatchToProps = {
+  addUserId
+}
 
-export default withStyles(styles)(withRouter(Login));
+const mapStateToProps = ({ users }) => {
+  console.log('state,', users);
+  return ({
+    users
+  })
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(
+    withRouter(Login)
+  )
+);

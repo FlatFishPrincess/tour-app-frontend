@@ -6,7 +6,7 @@ import App from './App';
 import { ThemeProvider } from '@material-ui/styles';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import rootReducer from './reducers';
+import rootReducer from './shared/reducers/index';
 import theme from './theme';
 
 const store = createStore(rootReducer)
