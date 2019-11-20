@@ -1,9 +1,14 @@
+import { green } from '@material-ui/core/colors';
+
 export const styles = theme => ({
   signInButton: {
     marginTop: 10,
   },
   fixedWidth: {
     width: 320,
+  },
+  success: {
+    backgroundColor: green[600],
   },
   // ------------ above custom -------------
   container: {
@@ -49,14 +54,15 @@ export const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
     [theme.breakpoints.down("md")]: {
       width: "50%",
     },
   },
   form: {
-    width: 320,
+    padding: theme.spacing(4),
+    // width: 320,
   },
   tab: {
     fontWeight: 400,

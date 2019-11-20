@@ -61,14 +61,6 @@ const App = (props) =>  {
   );
 }
 
-// const Protected = () => {
-//   return <h2>Protected!</h2>
-// }
-
-const Dashboard = () => {
-  return <h2>App!</h2>;
-}
-
 const mapStateToProps = ({ users }) => {
   console.log('state,', users);
   return ({
@@ -77,4 +69,3 @@ const mapStateToProps = ({ users }) => {
 }
 
 export default connect(mapStateToProps, null)(App);
-

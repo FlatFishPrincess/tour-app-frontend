@@ -15,6 +15,10 @@ const useStyles = makeStyles(theme => ({
   },
   signOutButton: {
     marginLeft: theme.spacing(1)
+  },
+  title: {
+    textDecoration: 'none',
+    color: 'white',
   }
 }));
 
@@ -45,7 +49,7 @@ export default function Header(props) {
        className={clsx(classes.root, className)}
       >
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
+        <Typography component="a" href='/app/dashboard' variant="h6" className={classes.title}>
           Tour Review
         </Typography>
         <div className={classes.flexGrow} />
