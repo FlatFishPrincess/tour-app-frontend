@@ -1,15 +1,16 @@
-import React from 'react'
-import { Box, makeStyles, Card, CardHeader, Avatar, IconButton, Collapse, CardMedia, CardContent, CardActions, Typography, Button } from '@material-ui/core';
+import React, { useEffect, useRef } from 'react'
+import { Box, makeStyles, Card, CardHeader, Avatar, IconButton, Collapse, CardMedia, CardContent, CardActions, Typography, TextField, Button } from '@material-ui/core';
 import {
   MoreVert as MoreVertIcon,
   Favorite as FavoriteIcon,
-  Share as ShareIcon,
   ExpandMore as ExpandMoreIcon,
   Comment as CommentIcon,
 } from '@material-ui/icons';
-import { red } from '@material-ui/core/colors';
 import Rating from '@material-ui/lab/Rating';
 import clsx from 'clsx';
+import axios from 'axios';
+import { deepOrange, red } from '@material-ui/core/colors';
+import Comment from './Comment';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -31,26 +32,105 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotate(180deg)',
   },
   avatar: {
-    backgroundColor: red[500],
+    backgroundColor: deepOrange[500],
   },
   comments: {
     color: theme.palette.primary,
   },
+  favIcon: {
+    color: red[500]
+  },
+  writeCommentWrapper: {
+    display: 'flex',
+    justifyConent: 'space-between'
+  },
 }));
 
-function Post() {
+
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
+function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [user, setUser] = React.useState({});
+  const [comments, setComments] = React.useState([]);
+  const [fav, setFav] = React.useState(false);
+  const [commentValue, setCommentValue] = React.useState('');
+  const [isCommentUpdated, setIsCommentUpdated] = React.useState(false);
+  const { review, handleSaveComment, storedUserId } = props;
+
+  const prevCommentUpdated = usePrevious(isCommentUpdated);
+
+  useEffect(() => {
+    // Create an scoped async function in the hook
+    async function fetchUserAndComments() {
+      await fetchUser();
+      await fetchComment();
+    }
+    // Execute the created function directly
+    fetchUserAndComments();
+  
+    if(prevCommentUpdated !== isCommentUpdated) {
+      fetchComment();
+      setIsCommentUpdated(false);
+     }
+  }, [isCommentUpdated]);
+
+
+  const fetchUser = () => {
+    const FETCH_USER = `http://localhost:3000/get/user/${review.userId}`
+    axios.get(FETCH_USER)
+    .then(res => {
+      setUser(res.data[0]);
+    })
+    .catch(err => {
+      console.log('error occured,', err);
+    })
+  }
+
+  const fetchComment = () => {
+    const FETCH_COMMENT = `http://localhost:3000/get/comment/review/${review.reviewId}`;
+    axios.get(FETCH_COMMENT)
+    .then(res => {
+      setComments(res.data);
+    })
+    .catch(err => {
+      console.log('error occured,', err);
+    })
+  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const toggleFavIconColor = () => {
+    setFav(!fav);
+  }
+
+  const handleSendPostOnClick = e => {
+    e.preventDefault();
+    handleSaveComment(commentValue, review.reviewId);
+    setIsCommentUpdated(true);
+    setCommentValue('');
+  }
+
+  const handleWriteCommentOnChange = e => {
+    const { value } = e.target;
+    setCommentValue(value);
+  }
+
   return (
     <Card className={classes.card}>
       <CardHeader
         avatar={
-          <Avatar aria-label="Recipe">
-            JW
+          <Avatar className={classes.avatar}>
+            {user.firstName && user.firstName.substring(0,2)}
           </Avatar>
         }
         action={
@@ -58,8 +138,8 @@ function Post() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={`${user.firstName} ${user.lastName}`}
+        subheader={review.createdDate}
       />
       <CardMedia
         className={classes.media}
@@ -67,23 +147,22 @@ function Post() {
         title="Paella dish"
       />
       <CardContent>
+        <Typography gutterBottom paragraph>
+          {review.title}
+        </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
+          {review.reviewDescription}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="Add to favorites">
-          <FavoriteIcon />
+          <FavoriteIcon onClick={toggleFavIconColor} className={clsx({[classes.favIcon]: fav})}/>
         </IconButton>
         <IconButton aria-label="Share">
-          <ShareIcon />
-        </IconButton>
-        <IconButton aria-label="Share">
-          <CommentIcon />
+          <CommentIcon onClick={handleExpandClick}/>
         </IconButton>
         <Box component="fieldset" borderColor="transparent">
-          <Rating value={4} readOnly />
+          <Rating value={review.rating} readOnly />
         </Box>
         <IconButton
           className={clsx(classes.expand, {
@@ -91,36 +170,39 @@ function Post() {
           })}
           onClick={handleExpandClick}
           aria-expanded={expanded}
-          aria-label="Show more"
         >
           <ExpandMoreIcon />
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-            minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-            without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-            medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-            again without stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
+          {
+            comments.map(comment => (
+              <Comment comment={comment} key={comment.commentId}/>
+            ))
+          }
+          {
+            storedUserId && 
+            <div className={classes.writeCommentWrapper}>
+              <TextField
+                label="Write Comment"
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                name="comment"
+                onChange={handleWriteCommentOnChange}
+                value={commentValue}
+              />
+              <Button
+                color='primary'
+                // variant="contained"
+                onClick={handleSendPostOnClick}
+              >
+                Send
+              </Button>
+            </div>
+          }
+          
         </CardContent>
       </Collapse>
     </Card>

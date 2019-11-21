@@ -32,103 +32,33 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-export default function CountryList() {
+export default function CountryList(props) {
   const classes = useStyles();
-
+  const { locations } = props;
   return (
     <div className={classes.root}>
       <Typography variant="h5">Explore Worlds</Typography>
       <GridList spacing={20} className={classes.gridList} cols={3}>
-        <GridListTile>
-          <img src="https://source.unsplash.com/user/simonmigaj/1600x900/" />
-          <GridListTileBar
-            title="Seoul"
-            classes={{
-              root: classes.titleBar,
-              title: classes.title,
-            }}
-            actionIcon={
-              <IconButton>
-                <StarBorderIcon className={classes.title} />
-              </IconButton>
-            }
-          />
-        </GridListTile>
-        <GridListTile>
-          <img src="https://source.unsplash.com/user/simonmigaj/1600x900/" />
-          <GridListTileBar
-            title="Seoul"
-            classes={{
-              root: classes.titleBar,
-              title: classes.title,
-            }}
-            actionIcon={
-              <IconButton>
-                <StarBorderIcon className={classes.title} />
-              </IconButton>
-            }
-          />
-        </GridListTile>
-        <GridListTile>
-          <img src="https://source.unsplash.com/user/simonmigaj/1600x900/" />
-          <GridListTileBar
-            title="Seoul"
-            classes={{
-              root: classes.titleBar,
-              title: classes.title,
-            }}
-            actionIcon={
-              <IconButton>
-                <StarBorderIcon className={classes.title} />
-              </IconButton>
-            }
-          />
-        </GridListTile>
-        <GridListTile>
-          <img src="https://source.unsplash.com/user/simonmigaj/1600x900/" />
-          <GridListTileBar
-            title="Seoul"
-            classes={{
-              root: classes.titleBar,
-              title: classes.title,
-            }}
-            actionIcon={
-              <IconButton>
-                <StarBorderIcon className={classes.title} />
-              </IconButton>
-            }
-          />
-        </GridListTile>
-        <GridListTile>
-          <img src="https://source.unsplash.com/user/simonmigaj/1600x900/" />
-          <GridListTileBar
-            title="Seoul"
-            classes={{
-              root: classes.titleBar,
-              title: classes.title,
-            }}
-            actionIcon={
-              <IconButton>
-                <StarBorderIcon className={classes.title} />
-              </IconButton>
-            }
-          />
-        </GridListTile>
-        <GridListTile>
-          <img src="https://source.unsplash.com/user/simonmigaj/1600x900/" />
-          <GridListTileBar
-            title="Seoul"
-            classes={{
-              root: classes.titleBar,
-              title: classes.title,
-            }}
-            actionIcon={
-              <IconButton>
-                <StarBorderIcon className={classes.title} />
-              </IconButton>
-            }
-          />
-        </GridListTile>
+        {
+          locations.map(location => (
+            <GridListTile>
+              <img src={`https://source.unsplash.com/1600x900/?${location.name}`} alt={location.name}/>
+              <GridListTileBar
+                title={location.name}
+                subtitle={location.description}
+                classes={{
+                  root: classes.titleBar,
+                  title: classes.title,
+                }}
+                actionIcon={
+                  <IconButton>
+                    <StarBorderIcon className={classes.title} />
+                  </IconButton>
+                }
+              />
+            </GridListTile>
+          ))
+        }
       </GridList>
     </div>
   );

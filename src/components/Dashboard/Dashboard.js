@@ -3,24 +3,85 @@ import { withStyles, Grid } from '@material-ui/core';
 import { styles } from './styles';
 import Post from './Components/Post';
 import CountryList from './Components/CountryList';
+import axios from 'axios';
+import { connect } from 'react-redux';
 
 class Dashboard extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      locations: [],
+      reviews: [],
+    };
+  }
+
+  componentDidMount(){
+    const GET_REVIEWS_API = 'http://localhost:3000/get/review';
+    const GET_LOCATIONS_API = 'http://localhost:3000/get/location';
+
+    axios.all([
+      axios.get(GET_REVIEWS_API),
+      axios.get(GET_LOCATIONS_API),
+    ])
+    .then(axios.spread((reviewReponse, locationReponse) => {
+      const locations = locationReponse.data;
+      const reviews = reviewReponse.data;
+      this.setState({ locations, reviews });
+    }));
+  }
+
+  handlePostCommentOnSave = (comment, reviewId) => {
+    const { userId } = this.props;
+    if(!userId) {
+      // redirect to login page
+      return;
+    }
+    const CREATE_COMMENT_URL = 'http://localhost:3000/create/comment';
+    const createdDate = new Date().toISOString().substr(0,10);
+    
+    const data = {
+      userId: userId,
+      createdDate: createdDate,
+      comment: comment,
+      reviewId: reviewId
+    };
+
+    axios({
+      method: 'post',
+      url: CREATE_COMMENT_URL,
+      headers:{
+        'Accept': 'application/json'
+      },  
+      data
+    })
+    .then(r => {
+      this.setState({ isCommentUpdated: true })
+    })
+    .catch(e => console.log(e))
+  }
+
+
   render() {
-    const { classes } = this.props;
+    const { classes, userId } = this.props;
+    const { locations, reviews } = this.state;
     return (
       <div className={classes.row}>
         <Grid container className={classes.grid} spacing={2}>
-          <CountryList />
+          <CountryList locations={locations}/>
         </Grid>
         <Grid container className={classes.grid} spacing={2}>
           <Grid item xs={3}>
           </Grid>
           <Grid item xs={6}>
-            <Post />
-            <Post />
-            <Post />
-            <Post />
+            {reviews.map(review => (
+              <Post
+                review={review}
+                key={review.reviewId}
+                handleSaveComment={this.handlePostCommentOnSave}
+                storedUserId={userId}
+                />
+            ))}
           </Grid>
         </Grid>
       </div>
@@ -28,4 +89,8 @@ class Dashboard extends Component {
   }
 }
 
-export default withStyles(styles)(Dashboard);
+const mapStateToProps = state => ({
+  userId: state.users.userId
+});
+
+export default connect(mapStateToProps, null)(withStyles(styles)(Dashboard));
