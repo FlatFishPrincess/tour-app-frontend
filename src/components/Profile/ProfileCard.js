@@ -21,8 +21,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ProfileCard() {
+export default function ProfileCard(props) {
   const classes = useStyles();
+  const { user } = props;
   return (
     <Card>
       <CardContent>
@@ -32,16 +33,14 @@ export default function ProfileCard() {
               gutterBottom
               variant="h2"
             >
-              Jiweon Park
+              {`${user.firstName} ${user.lastName}`}
             </Typography>
             <Typography
               className={classes.locationText}
               color="textSecondary"
               variant="body1"
             >
-              profile detail will be displayed here! 
-              This is Jiweon Park, I love codeing and traveling! 
-              Wannt be a nomad coder
+              {`${user.profile}`}
             </Typography>
           </div>
           <Avatar

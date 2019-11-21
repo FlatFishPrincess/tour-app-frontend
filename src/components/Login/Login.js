@@ -13,7 +13,6 @@ import {
   IconButton
 } from "@material-ui/core";
 import { withRouter, Redirect } from "react-router-dom";
-// import { fakeAuth } from '../../App';
 import { styles } from './styles';
 import clsx from 'clsx';
 import axios from 'axios';
@@ -278,14 +277,14 @@ const mapDispatchToProps = {
   addUser
 }
 
-const mapStateToProps = ({ users }) => {
-  console.log('state,', users);
-  return ({
-    users
-  })
-}
+// const mapStateToProps = ({ users }) => {
+//   console.log('state,', users);
+//   return ({
+//     users
+//   })
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(null, mapDispatchToProps)(
   withStyles(styles)(
     withRouter(Login)
   )
