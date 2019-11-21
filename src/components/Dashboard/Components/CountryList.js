@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardMedia, CardContent, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -40,8 +40,8 @@ export default function CountryList(props) {
       <Typography variant="h5">Explore Worlds</Typography>
       <GridList spacing={20} className={classes.gridList} cols={3}>
         {
-          locations.map(location => (
-            <GridListTile>
+          locations.map((location, i) => (
+            <GridListTile key={i}>
               <img src={`https://source.unsplash.com/1600x900/?${location.name}`} alt={location.name}/>
               <GridListTileBar
                 title={location.name}

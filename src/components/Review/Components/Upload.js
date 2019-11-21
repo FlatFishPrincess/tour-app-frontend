@@ -12,7 +12,7 @@ import { Dialog,
  } from '@material-ui/core';
 import { CloudUpload as CloudUploadIcon } from '@material-ui/icons';
 
-import { styles } from './styles';
+import { styles } from './uploadStyles';
 import clsx from 'clsx';
 
 export class Upload extends Component {

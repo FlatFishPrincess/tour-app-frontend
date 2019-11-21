@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { addUserId } from '../../shared/actions/actions';
+import { addUserId, addUser } from '../../shared/actions/actions';
 
 const TabPanel = (props) => {
   const { children, activeTab, index, ...other } = props;
@@ -50,14 +50,6 @@ class Login extends React.Component {
     "profile": ""
   }
 
-  // login = () => {
-  //   fakeAuth.authenticate(() => {
-  //     this.setState(() => ({
-  //       redirectToReferrer: true
-  //     }))
-  //   })
-  // }
-
   onChangeHandleTabs = (e, activeTab) => {
     this.setState({ activeTab });
   }
@@ -76,7 +68,7 @@ class Login extends React.Component {
       data
     })
     .then(r => {
-      console.log('response?', r);
+      // console.log('response?', r);
       this.setState({ snackbarOpen: true })
     })
     .catch(e => console.log(e))
@@ -84,6 +76,7 @@ class Login extends React.Component {
 
   onClickeLoginButton = e => {
     e.preventDefault();
+
     const { username, password } = this.state;
     const userId = `${username}123`;
     const LOGIN_USER_URL = 'http://localhost:3000/login/user';
@@ -99,10 +92,12 @@ class Login extends React.Component {
       }
     })
     .then(r => {
-      this.props.addUserId(r.data[0]);
+      this.props.addUserId(r.data[0].userId);
+      this.props.addUser(r.data[0]);
       this.setState({ redirectToReferrer: true })
     })
     .catch(e => console.log(e))
+   
   }
 
   onChangeRegisterFields = e => {
@@ -279,7 +274,8 @@ class Login extends React.Component {
 }
 
 const mapDispatchToProps = {
-  addUserId
+  addUserId,
+  addUser
 }
 
 const mapStateToProps = ({ users }) => {

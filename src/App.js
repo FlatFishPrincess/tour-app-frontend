@@ -4,8 +4,6 @@ import {
   BrowserRouter as Router,
   Route,
   Redirect,
-  Link,
-  withRouter,
   Switch
 } from 'react-router-dom';
 import Login from './components/Login/Login';

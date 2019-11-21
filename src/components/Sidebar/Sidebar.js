@@ -8,6 +8,7 @@ import {
   AccountCircle as AccountIcon,
   PhotoCamera as PhotoCameraIcon,
 } from '@material-ui/icons';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -32,10 +33,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Sidebar(props) {
-  const { open, variant, onClose, className, ...rest } = props;
+const Sidebar = (props) => {
+  const { open, variant, onClose, className, user } = props;
   const classes = useStyles();
-
+  console.log('user?',user);
   const sidebarNav = [
     {
       title: 'Dashboard',
@@ -60,11 +61,11 @@ export default function Sidebar(props) {
       href: '/app/write-review',
       icon: <PostAddIcon />
     },
-    {
-      title: 'Wrtie Post',
-      href: '/app/write-review',
-      icon: <PhotoCameraIcon />
-    },
+    // {
+    //   title: 'Wrtie Post',
+    //   href: '/app/write-review',
+    //   icon: <PhotoCameraIcon />
+    // },
   ];
 
   return (
@@ -78,11 +79,11 @@ export default function Sidebar(props) {
       <div
         className={clsx(classes.root, className)}
       >
-        <SidebarProfile />
+        <SidebarProfile user={user}/>
         <Divider className={classes.divider}/>
         <List>
           {sidebarNav.map(e => (
-            <ListItem button component="a" href={e.href}>
+            <ListItem button component="a" href={e.href} key={e.href}>
               <ListItemIcon>
                 {e.icon}
               </ListItemIcon>
@@ -93,7 +94,7 @@ export default function Sidebar(props) {
         <Divider className={classes.divider}/>
         <List>
           {sidebarBelow.map(e => (
-            <ListItem button component="a" href={e.href}>
+            <ListItem button component="a" href={e.href} key={e.href}>
               <ListItemIcon>
                 {e.icon}
               </ListItemIcon>
@@ -105,3 +106,10 @@ export default function Sidebar(props) {
     </Drawer>
   )
 }
+
+const mapStateToProps = state => ({
+  // userId: state.users.userId,
+  user: state.users.user
+});
+
+export default connect(mapStateToProps, null)(Sidebar);

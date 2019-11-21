@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import Select from 'react-select';
-import { makeStyles, Paper, Grid, Typography, Box, Container, TextField, Button } from '@material-ui/core';
+import { makeStyles, Paper, Typography, Box, Container, TextField, Button } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import Upload from './Components/Upload';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import AccessDeniedDialog from './Components/AccessDeniedDialog';
 
 const labels = {
   0.5: 'Useless',
@@ -39,7 +40,7 @@ const Review = (props) => {
   const [locationId, setLocationId] = React.useState(null);
   const [hover, setHover] = React.useState(-1);
   const [rating, setRating] = React.useState(-1);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
   const [files, setFiles] = React.useState([]);
   const [locations, setLocations] = React.useState([]);
   const [title, setTitleValue] = React.useState('');
@@ -82,12 +83,12 @@ const Review = (props) => {
     setRating(value);
   }
 
-  const handleClickOpenDialog = () => {
-    setDialogOpen(true);
+  const handleClickOpenUploadDialog = () => {
+    setUploadDialogOpen(true);
   }
 
-  const handleClickCloseDialog = () => {
-    setDialogOpen(false);
+  const handleClickCloseUploadDialog = () => {
+    setUploadDialogOpen(false);
   }
 
   const onFilesAdded = (file) => {
@@ -134,14 +135,19 @@ const Review = (props) => {
   const renderUploadDialog = () => {
     return (
       <Upload 
-        open={dialogOpen}
-        handleClose={handleClickCloseDialog}
+        open={uploadDialogOpen}
+        handleClose={handleClickCloseUploadDialog}
         onFilesAdded={onFilesAdded}
         files={files}
       />
     )
   }
 
+  if(!props.userId) {
+    return (
+      <AccessDeniedDialog />
+    );
+  }
 
   return (
     <React.Fragment>
@@ -193,7 +199,7 @@ const Review = (props) => {
               />
             </Box>
             <Box m={3}>
-              <Button variant="outlined" color="primary" onClick={handleClickOpenDialog}>
+              <Button variant="outlined" color="primary" onClick={handleClickOpenUploadDialog}>
                 Upload Pictures
               </Button>
             </Box>

@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import {
   Route,
   Switch,
-  Redirect,
   withRouter,
 } from "react-router-dom";
 

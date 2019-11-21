@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Typography, makeStyles } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-
+import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -20,35 +20,66 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function SidebarProfile() {
-  const classes = useStyles();
 
-  const user = {
-    name: 'Jiweon Park',
-    // avatar: '/images/avatars/avatar_11.png',
-    profile: "I'm Jiweon Park. I am passionate to traveling all over the world. Always carry my laptop to code. I love code!"
-  };
+export default function SidebarProfile(props) {
+  const classes = useStyles();
+  const { user } = props;
+
+
+
+const rednerUserAvatar = (user) => {
+  return (
+    <Avatar
+      alt="Person"
+      className={classes.avatar}
+      component={RouterLink}
+      src={user.photo && user.photo }
+      to="/app/profile"
+    >
+      {user && user.photo ? '' : user.firstName.substring(0,2)}
+    </Avatar>
+  )
+}
+
+const renderGuestAvatar = () => {
+  return (
+    <Avatar>
+      <AccountCircleIcon />
+    </Avatar>
+  )
+}
 
   return (
     <div className={classes.root}>
-      <Avatar
-        alt="Person"
-        className={classes.avatar}
-        component={RouterLink}
-        src={user.avatar && user.avatar}
-        to="/app/profile"
-      >
-        {user.avatar ? '' : user.name.substring(0,2)}
-      </Avatar>
+    {
+      user
+      ? rednerUserAvatar(user)
+      : renderGuestAvatar()
+    }
        <Typography
         className={classes.name}
         variant="h6"
         gutterBottom={true}
         color='primary'
       >
-        {user.name}
+        {
+          user
+          ? `${user.firstName} ${user.lastName}`
+          : "guest"
+        }
       </Typography>
-      <Typography variant="body2">{user.profile}</Typography>
+      <Typography variant="body2">
+        {
+          user
+          ? `${user.firstName} ${user.lastName}`
+          : ""
+        }
+        {
+          user
+          ? user.profile
+          : ""
+        }
+      </Typography>
     </div>
   )
 }
