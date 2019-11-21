@@ -1,18 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Select from 'react-select';
 import { makeStyles, Paper, Grid, Typography, Box, Container, TextField, Button } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import Upload from './Components/Upload';
-
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' }
-].map(suggestion => ({
-    value: suggestion.label,
-    label: suggestion.label,
-}));
+import axios from 'axios';
+import { connect } from 'react-redux';
 
 const labels = {
   0.5: 'Useless',
@@ -43,17 +35,43 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function Review() {
-  const [country, setCountry] = React.useState(null);
+const Review = (props) => {
+  const [locationId, setLocationId] = React.useState(null);
   const [hover, setHover] = React.useState(-1);
   const [rating, setRating] = React.useState(-1);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [files, setFiles] = React.useState([]);
-
+  const [locations, setLocations] = React.useState([]);
+  const [title, setTitleValue] = React.useState('');
+  const [description, setDescriptionValue] = React.useState('[]');
   const classes = useStyles();
   
-  const handleChangeCountry = value => {
-    setCountry(value);
+  useEffect(() => {
+    async function fetchDefaultLocations() {
+      await fetchLocations();
+    }
+
+    fetchDefaultLocations();
+  }, []);
+
+  const fetchLocations = () => {
+    const FETCH_LOCATIONS = 'http://localhost:3000/get/location'
+    axios.get(FETCH_LOCATIONS)
+    .then(res => {
+      setLocations(res.data);
+    })
+    .catch(err => {
+      console.log('error occured,', err);
+    })
+  }
+
+  const suggestions = locations.map(location => ({
+      label: `${location.name} (${location.country})`,
+      value: location.locationId,
+  }));
+
+  const handleChangeLocation = location => {
+    setLocationId(location.value);
   };
 
   const handleChangeRatingActive = (e, value) => {
@@ -76,6 +94,43 @@ export default function Review() {
     setFiles(files.concat(file));
   }
 
+  const handleOnChangeTitleInput = (e) => {
+    const { value } = e.target;
+    setTitleValue(value);
+  }
+
+  const handleOnChangeDescriptionInput = (e) => {
+    const { value } = e.target;
+    setDescriptionValue(value);
+  }
+
+  const handleOnClickSaveReview = () => {
+    const createdDate = new Date().toISOString().substr(0,10);
+    const { userId } = props;
+    const CREATE_REVIEW_URL = 'http://localhost:3000/create/review';
+    const data = {
+      createdDate: createdDate,
+      reviewDescription: description,
+      title: title,
+      userId: userId,
+      locationId: locationId,
+      rating: rating
+    }
+    axios({
+      method: 'post',
+      url: CREATE_REVIEW_URL,
+      headers:{
+        'Accept': 'application/json'
+      },  
+      data
+    })
+    .then(r => {
+      props.history.push("/app");
+    })
+    .catch(e => console.log(e))
+    console.log('data?', data);
+  }
+
   const renderUploadDialog = () => {
     return (
       <Upload 
@@ -86,6 +141,7 @@ export default function Review() {
       />
     )
   }
+
 
   return (
     <React.Fragment>
@@ -107,13 +163,13 @@ export default function Review() {
               </Box>
             </Box>
             <Box m={2}>
-              <Typography component="label" variant="h6" className={classes.label}>Select Country</Typography>
+              <Typography component="label" variant="h6" className={classes.label}>Select Location</Typography>
               <Select
                 inputId="react-select-single"
-                placeholder="Search a country (start with a)"
+                placeholder="Select your location"
                 options={suggestions}
-                value={country}
-                onChange={handleChangeCountry}
+                value={locationId}
+                onChange={handleChangeLocation}
               />
             </Box>
             <Box m={2}>
@@ -121,15 +177,19 @@ export default function Review() {
               <TextField
                 label="Write Title here"
                 fullWidth
+                onChange={handleOnChangeTitleInput}
+                name='title'
                 />
             </Box>
             <Box m={2}>
-            <Typography component="label" variant="h6" className={classes.label}>Wrtie Your Review Title Here</Typography>
+            <Typography component="label" variant="h6" className={classes.label}>Wrtie Your Review Description Here</Typography>
               <TextField
                 multiline
                 fullWidth
                 rows={10}
                 variant="outlined"
+                name='reviewDescription'
+                onChange={handleOnChangeDescriptionInput}
               />
             </Box>
             <Box m={3}>
@@ -138,7 +198,12 @@ export default function Review() {
               </Button>
             </Box>
             <Box m={3} p={3} display="flex" justifyContent="center">
-              <Button variant="contained" color="primary" className={classes.button}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleOnClickSaveReview}
+                >
                 Save
               </Button>
             </Box>
@@ -149,3 +214,9 @@ export default function Review() {
     </React.Fragment>  
   )
 }
+
+const mapStateToProps = state => ({
+  userId: state.users.userId
+});
+
+export default connect(mapStateToProps, null)(Review);

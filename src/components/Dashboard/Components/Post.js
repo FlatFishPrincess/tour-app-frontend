@@ -177,9 +177,13 @@ function Post(props) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           {
+            comments.length > 0
+            ?
             comments.map(comment => (
               <Comment comment={comment} key={comment.commentId}/>
             ))
+            :
+            <Typography>No comment found</Typography>
           }
           {
             storedUserId && 

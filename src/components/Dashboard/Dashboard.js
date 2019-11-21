@@ -35,6 +35,7 @@ class Dashboard extends Component {
     const { userId } = this.props;
     if(!userId) {
       // redirect to login page
+      alert('no user Id Found!');
       return;
     }
     const CREATE_COMMENT_URL = 'http://localhost:3000/create/comment';
