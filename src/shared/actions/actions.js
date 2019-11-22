@@ -8,6 +8,13 @@ export function addUser(user) {
   return { type: STORE_USER, user: user }
 }
 
+export function addAdminId(adminId) {
+  console.log('admin saved?', adminId)
+  return { type: STORE_ADMIN, adminId: adminId }
+}
+
 export const STORE_USER = 'STORE_USER'
 
 export const STORE_USER_ID = 'STORE_USER_ID'
+
+export const STORE_ADMIN = 'STORE_ADMIN'

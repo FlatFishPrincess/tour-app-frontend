@@ -23,39 +23,52 @@ const useStyles = makeStyles(theme => ({
 
 export default function SidebarProfile(props) {
   const classes = useStyles();
-  const { user } = props;
+  const { user, adminId } = props;
+  const rednerUserAvatar = (user) => {
+    return (
+      <Avatar
+        alt="Person"
+        className={classes.avatar}
+        component={RouterLink}
+        src={user.photo && user.photo }
+        to="/app/profile"
+      >
+        {user && user.photo ? '' : user.firstName.substring(0,2)}
+      </Avatar>
+    )
+  }
 
+  const renderGuestAvatar = () => {
+    return (
+      <Avatar>
+        <AccountCircleIcon />
+      </Avatar>
+    )
+  }
 
-
-const rednerUserAvatar = (user) => {
-  return (
-    <Avatar
-      alt="Person"
-      className={classes.avatar}
-      component={RouterLink}
-      src={user.photo && user.photo }
-      to="/app/profile"
-    >
-      {user && user.photo ? '' : user.firstName.substring(0,2)}
-    </Avatar>
-  )
-}
-
-const renderGuestAvatar = () => {
-  return (
-    <Avatar>
-      <AccountCircleIcon />
-    </Avatar>
-  )
-}
+  if (adminId) {
+    return (
+      <div className={classes.root}>
+      {renderGuestAvatar()}
+       <Typography
+        className={classes.name}
+        variant="h6"
+        gutterBottom={true}
+        color='primary'
+      >
+        Admin
+      </Typography>
+    </div>
+    )
+  }
 
   return (
     <div className={classes.root}>
-    {
-      user
-      ? rednerUserAvatar(user)
-      : renderGuestAvatar()
-    }
+      {
+        user
+        ? rednerUserAvatar(user)
+        : renderGuestAvatar()
+      }
        <Typography
         className={classes.name}
         variant="h6"

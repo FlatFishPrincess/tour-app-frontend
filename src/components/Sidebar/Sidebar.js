@@ -6,7 +6,7 @@ import {
   Dashboard as DashboardIcon,
   PostAdd as PostAddIcon,
   AccountCircle as AccountIcon,
-  PhotoCamera as PhotoCameraIcon,
+  // PhotoCamera as PhotoCameraIcon,
 } from '@material-ui/icons';
 import { connect } from 'react-redux';
 
@@ -34,9 +34,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Sidebar = (props) => {
-  const { open, variant, onClose, className, user } = props;
+  const { open, variant, onClose, className, user, adminId } = props;
+  console.log('adminid?', adminId);
   const classes = useStyles();
-  console.log('user?',user);
   const sidebarNav = [
     {
       title: 'Dashboard',
@@ -68,6 +68,14 @@ const Sidebar = (props) => {
     // },
   ];
 
+  const adminSidebarNav = [
+    {
+      title: 'Dashboard',
+      href: '/admin/dashboard',
+      icon: <DashboardIcon />
+    },
+  ];
+
   return (
     <Drawer
       anchor="left"
@@ -79,10 +87,18 @@ const Sidebar = (props) => {
       <div
         className={clsx(classes.root, className)}
       >
-        <SidebarProfile user={user}/>
+        <SidebarProfile user={user} adminId={adminId} />
         <Divider className={classes.divider}/>
         <List>
-          {sidebarNav.map(e => (
+          {user && sidebarNav.map(e => (
+            <ListItem button component="a" href={e.href} key={e.href}>
+              <ListItemIcon>
+                {e.icon}
+              </ListItemIcon>
+              <ListItemText primary={e.title} />
+            </ListItem>
+          ))}
+          {adminId && adminSidebarNav.map(e=> (
             <ListItem button component="a" href={e.href} key={e.href}>
               <ListItemIcon>
                 {e.icon}
@@ -92,24 +108,27 @@ const Sidebar = (props) => {
           ))}
         </List>
         <Divider className={classes.divider}/>
-        <List>
-          {sidebarBelow.map(e => (
-            <ListItem button component="a" href={e.href} key={e.href}>
-              <ListItemIcon>
-                {e.icon}
-              </ListItemIcon>
-              <ListItemText primary={e.title} />
-            </ListItem>
-          ))}
-        </List>
+        {
+          user && 
+          <List>
+            {sidebarBelow.map(e => (
+              <ListItem button component="a" href={e.href} key={e.href}>
+                <ListItemIcon>
+                  {e.icon}
+                </ListItemIcon>
+                <ListItemText primary={e.title} />
+              </ListItem>
+            ))}
+          </List>
+        }
       </div>
     </Drawer>
   )
 }
 
 const mapStateToProps = state => ({
-  // userId: state.users.userId,
-  user: state.users.user
+  user: state.users.user,
+  adminId: state.users.adminId
 });
 
 export default connect(mapStateToProps, null)(Sidebar);

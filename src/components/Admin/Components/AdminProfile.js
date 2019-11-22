@@ -1,7 +1,8 @@
 import React from 'react'
 import { Card, CardContent, Typography, Box } from '@material-ui/core';
 
-export default function AdminProfile() {
+export default function AdminProfile(props) {
+  const { adminId } = props;
   return (
     <Box mb={3}>
       <Card>
@@ -11,7 +12,7 @@ export default function AdminProfile() {
               gutterBottom
               variant="h5"
             >
-              admin name
+              {adminId}
             </Typography>
           </Box>
         </CardContent>

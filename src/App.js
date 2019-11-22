@@ -49,6 +49,11 @@ const App = (props) =>  {
           path="/app"
           render={() => <Redirect to="/app/dashboard" />}
         />
+        <Route
+          exact
+          path="/admin"
+          render={() => <Redirect to="/admin/dashboard" />}
+        />
         <Route path="/admin" component={Routes} />
         <Route path="/login" component={Login} />
         <Route path="/app" component={Routes} />

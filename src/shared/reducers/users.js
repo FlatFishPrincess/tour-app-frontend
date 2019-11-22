@@ -1,4 +1,4 @@
-import { STORE_USER, STORE_USER_ID } from '../actions/actions';
+import { STORE_USER, STORE_USER_ID, STORE_ADMIN } from '../actions/actions';
 
 const users = (state = {}, action) => {
   switch (action.type) {
@@ -14,6 +14,12 @@ const users = (state = {}, action) => {
         ...state,
         user: action.user,
       }
+    case STORE_ADMIN:
+        console.log('reducer', action);
+        return {
+          ...state,
+          adminId: action.adminId,
+        }
     default:
       return state
   }

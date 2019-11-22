@@ -10,7 +10,10 @@ import {
   Box,
   Snackbar,
   SnackbarContent,
-  IconButton
+  IconButton,
+  FormGroup,
+  FormControlLabel,
+  Switch
 } from "@material-ui/core";
 import { withRouter, Redirect } from "react-router-dom";
 import { styles } from './styles';
@@ -18,7 +21,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { addUserId, addUser } from '../../shared/actions/actions';
+import { addUserId, addUser, addAdminId } from '../../shared/actions/actions';
 
 const TabPanel = (props) => {
   const { children, activeTab, index, ...other } = props;
@@ -46,7 +49,8 @@ class Login extends React.Component {
     "lastName": "",
     "email": "",
     "phoneNum": "",
-    "profile": ""
+    "profile": "",
+    isAdmin: false
   }
 
   onChangeHandleTabs = (e, activeTab) => {
@@ -75,8 +79,17 @@ class Login extends React.Component {
 
   onClickeLoginButton = e => {
     e.preventDefault();
+    const { isAdmin } = this.state;
+    if (isAdmin) {
+      this.renderAdminLogin();
+    } else {
+      this.renderUserLogin();
+    }
+  }
 
+  renderUserLogin = () => {
     const { username, password } = this.state;
+    // FIXME: force to make a userID
     const userId = `${username}123`;
     const LOGIN_USER_URL = 'http://localhost:3000/login/user';
     axios({
@@ -96,7 +109,32 @@ class Login extends React.Component {
       this.setState({ redirectToReferrer: true })
     })
     .catch(e => console.log(e))
-   
+  }
+
+  renderAdminLogin = () => {
+    const { username, password } = this.state;
+    // FIXME: force to make a userID
+    const adminId = `${username}123`;
+    const LOGIN_ADMIN_URL = 'http://localhost:3000/login/admin';
+    axios({
+      method: 'post',
+      url: LOGIN_ADMIN_URL,
+      headers:{
+        'Accept': 'application/json'
+      },  
+      data: {
+        adminId: adminId,
+        adminpassword: password
+      }
+    })
+    .then(r => {
+      this.props.addAdminId(r.data);
+      // FIXME: force to set null user
+      this.props.addUserId(null);
+      this.props.addUser(null);
+      this.props.history.push('/admin/dashboard');
+    })
+    .catch(e => console.log(e))
   }
 
   onChangeRegisterFields = e => {
@@ -138,9 +176,15 @@ class Login extends React.Component {
     );
   }
 
+  handleOnChangeAuth = (e) => {
+    this.setState(prevState => ({
+      isAdmin: !prevState.isAdmin
+    }));
+  }
+
   render() {
     const { classes } = this.props;
-    const { redirectToReferrer, activeTab } = this.state
+    const { redirectToReferrer, activeTab, isAdmin } = this.state
     const { from } = this.props.location.state || { from: {pathname: "/" }}
     if(redirectToReferrer === true) {
       return (
@@ -187,6 +231,12 @@ class Login extends React.Component {
                 name="password"
                 onChange={this.onChangeRegisterFields}
               />
+               <FormGroup>
+                <FormControlLabel
+                  control={<Switch checked={isAdmin} onChange={this.handleOnChangeAuth} />}
+                  label={!isAdmin ? 'User' : 'Admin'}
+                />
+              </FormGroup>
               <Button
                 onClick={this.onClickeLoginButton}
                 variant="contained"
@@ -274,7 +324,8 @@ class Login extends React.Component {
 
 const mapDispatchToProps = {
   addUserId,
-  addUser
+  addUser,
+  addAdminId
 }
 
 // const mapStateToProps = ({ users }) => {

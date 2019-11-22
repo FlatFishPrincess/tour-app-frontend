@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { Table, makeStyles, Paper, TableHead, TableCell, TableBody, TableRow, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -11,28 +12,28 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LocationTable(props) {
+export default function UserTable(props) {
   const classes = useStyles();
-  const { locations } = props;
+  const { users } = props;
   return (
     <Paper className={classes.root}>
-      <Typography variant="h5" gutterBottom>Location Table</Typography>
+      <Typography variant="h5" gutterBottom>User Table</Typography>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Location Name</TableCell>
-            <TableCell>Country</TableCell>
-            <TableCell>Description</TableCell>
+            <TableCell>User Id</TableCell>
+            <TableCell>User Name</TableCell>
+            <TableCell>Full Name</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {locations.map(location => (
-            <TableRow key={location.id}>
+          {users.map(user => (
+            <TableRow key={user.userId}>
               <TableCell component="th" scope="row">
-                {location.name}
+                {user.userId}
               </TableCell>
-              <TableCell>{location.country}</TableCell>
-              <TableCell>{location.description}</TableCell>
+              <TableCell>{user.username}</TableCell>
+              <TableCell>{user.firstName} {user.lastName}</TableCell>
             </TableRow>
           ))}
         </TableBody>
