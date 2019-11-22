@@ -85,6 +85,37 @@ const Sidebar = (props) => {
     props.history.push('/app');
   }
 
+  const handleOnClickLogin = () => {
+    props.history.push('/login');
+  }
+
+  const renderLogout = () => {
+    return (
+      <ListItem button onClick={handleOnClickLogout} key='logout'>
+        <ListItemIcon>
+          <ExitToAppIcon />
+        </ListItemIcon>
+        <ListItemText primary='Logout' />
+      </ListItem>
+    );
+  }
+
+  const renderLogin = () => {
+    return (
+      <ListItem button onClick={handleOnClickLogin} key='login'>
+        <ListItemIcon>
+          <ExitToAppIcon />
+        </ListItemIcon>
+        <ListItemText primary='Login' />
+      </ListItem>
+    )
+  }
+
+  const isLoggedIn = user ? true : adminId ? true : false;
+  // const isUser = user ? true : false;
+  // const isAdmin = adminId ? true : false;
+
+  console.log('is logged in?',isLoggedIn);
   return (
     <Drawer
       anchor="left"
@@ -115,16 +146,13 @@ const Sidebar = (props) => {
               <ListItemText primary={e.title} />
             </ListItem>
           ))}
-          <ListItem button onClick={handleOnClickLogout} key='logout'>
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary='Logout' />
-          </ListItem>
+          {isLoggedIn
+            ? renderLogout()
+            : renderLogin()
+          }
         </List>
         <Divider className={classes.divider}/>
-        {
-          user && 
+        { user && 
           <List>
             {sidebarBelow.map(e => (
               <ListItem button component="a" href={e.href} key={e.href}>

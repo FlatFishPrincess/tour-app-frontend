@@ -5,7 +5,7 @@ import { Rating } from '@material-ui/lab';
 import Upload from './Components/Upload';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import AccessDeniedDialog from './Components/AccessDeniedDialog';
+import AccessDeniedDialog from '../Global/AccessDeniedDialog';
 
 const labels = {
   0.5: 'Useless',

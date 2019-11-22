@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { addUser } from '../../shared/actions/actions';
 import ProfileSnackbar from './ProfileSnackbar';
+import AccessDeniedDialog from '../Global/AccessDeniedDialog';
 
 const Profile = (props) => {
   const { user } = props;
@@ -52,6 +53,12 @@ const Profile = (props) => {
     .catch(err => {
       console.log('error occured,', err);
     })
+  }
+
+  if(!props.user) {
+    return (
+      <AccessDeniedDialog />
+    );
   }
 
   return (

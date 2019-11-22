@@ -1,6 +1,6 @@
 import { STORE_USER, STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions/actions';
 
-// const initialState = {};
+const initialState = {};
 
 const users = (state = {}, action) => {
   switch (action.type) {
@@ -24,7 +24,7 @@ const users = (state = {}, action) => {
         }
     case LOGOUT:
         console.log('reducer');
-        return state;
+        return {};
     default:
       return state;
   }
