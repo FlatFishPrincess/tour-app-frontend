@@ -13,8 +13,14 @@ export function addAdminId(adminId) {
   return { type: STORE_ADMIN, adminId: adminId }
 }
 
+export function logout() {
+  console.log('logout');
+  return { type: LOGOUT }
+}
 export const STORE_USER = 'STORE_USER'
 
 export const STORE_USER_ID = 'STORE_USER_ID'
 
 export const STORE_ADMIN = 'STORE_ADMIN'
+
+export const LOGOUT = 'LOGOUT'

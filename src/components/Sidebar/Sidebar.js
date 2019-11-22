@@ -6,9 +6,12 @@ import {
   Dashboard as DashboardIcon,
   PostAdd as PostAddIcon,
   AccountCircle as AccountIcon,
+  ExitToApp as ExitToAppIcon
   // PhotoCamera as PhotoCameraIcon,
 } from '@material-ui/icons';
 import { connect } from 'react-redux';
+import { logout } from '../../shared/actions/actions';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -76,6 +79,12 @@ const Sidebar = (props) => {
     },
   ];
 
+  const handleOnClickLogout = () => {
+    const { logout } = props;
+    logout();
+    props.history.push('/app');
+  }
+
   return (
     <Drawer
       anchor="left"
@@ -90,7 +99,7 @@ const Sidebar = (props) => {
         <SidebarProfile user={user} adminId={adminId} />
         <Divider className={classes.divider}/>
         <List>
-          {user && sidebarNav.map(e => (
+          {!adminId && sidebarNav.map(e => (
             <ListItem button component="a" href={e.href} key={e.href}>
               <ListItemIcon>
                 {e.icon}
@@ -106,6 +115,12 @@ const Sidebar = (props) => {
               <ListItemText primary={e.title} />
             </ListItem>
           ))}
+          <ListItem button onClick={handleOnClickLogout} key='logout'>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary='Logout' />
+          </ListItem>
         </List>
         <Divider className={classes.divider}/>
         {
@@ -131,4 +146,9 @@ const mapStateToProps = state => ({
   adminId: state.users.adminId
 });
 
-export default connect(mapStateToProps, null)(Sidebar);
+const mapDispatchToProps = {
+  logout
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Sidebar));

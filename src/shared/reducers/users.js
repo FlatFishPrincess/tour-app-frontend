@@ -1,4 +1,6 @@
-import { STORE_USER, STORE_USER_ID, STORE_ADMIN } from '../actions/actions';
+import { STORE_USER, STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions/actions';
+
+// const initialState = {};
 
 const users = (state = {}, action) => {
   switch (action.type) {
@@ -20,8 +22,11 @@ const users = (state = {}, action) => {
           ...state,
           adminId: action.adminId,
         }
+    case LOGOUT:
+        console.log('reducer');
+        return state;
     default:
-      return state
+      return state;
   }
 }
 

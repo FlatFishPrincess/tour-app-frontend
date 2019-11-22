@@ -13,6 +13,7 @@ class Dashboard extends Component {
     this.state = {
       locations: [],
       reviews: [],
+      isCommentUpdated: false,
     };
   }
 
@@ -40,7 +41,7 @@ class Dashboard extends Component {
     }
     const CREATE_COMMENT_URL = 'http://localhost:3000/create/comment';
     const createdDate = new Date().toISOString().substr(0,10);
-    
+    this.setState({isCommentUpdated: false})
     const data = {
       userId: userId,
       createdDate: createdDate,
@@ -65,7 +66,7 @@ class Dashboard extends Component {
 
   render() {
     const { classes, userId } = this.props;
-    const { locations, reviews } = this.state;
+    const { locations, reviews, isCommentUpdated } = this.state;
     return (
       <div className={classes.row}>
         <Grid container className={classes.grid} spacing={2}>
@@ -81,6 +82,7 @@ class Dashboard extends Component {
                 key={review.reviewId}
                 handleSaveComment={this.handlePostCommentOnSave}
                 storedUserId={userId}
+                isCommentUpdated={isCommentUpdated}
                 />
             ))}
           </Grid>
