@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const Review = (props) => {
-  const [locationId, setLocationId] = React.useState(null);
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
   const [hover, setHover] = React.useState(-1);
   const [rating, setRating] = React.useState(-1);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
@@ -72,7 +72,8 @@ const Review = (props) => {
   }));
 
   const handleChangeLocation = location => {
-    setLocationId(location.value);
+    console.log('select onchange?',location.value);
+    setSelectedLocation(location);
   };
 
   const handleChangeRatingActive = (e, value) => {
@@ -109,6 +110,7 @@ const Review = (props) => {
     const createdDate = new Date().toISOString().substr(0,10);
     const { userId } = props;
     const CREATE_REVIEW_URL = 'http://localhost:3000/create/review';
+    const locationId = selectedLocation.value
     const data = {
       createdDate: createdDate,
       reviewDescription: description,
@@ -149,6 +151,8 @@ const Review = (props) => {
     );
   }
 
+  console.log('location id?',selectedLocation);
+
   return (
     <React.Fragment>
       <Container maxWidth="md">
@@ -174,7 +178,7 @@ const Review = (props) => {
                 inputId="react-select-single"
                 placeholder="Select your location"
                 options={suggestions}
-                value={locationId}
+                value={selectedLocation}
                 onChange={handleChangeLocation}
               />
             </Box>
