@@ -1,6 +1,8 @@
 import React from 'react'
 import { Card, CardContent, Typography, Divider, CardActions, Button, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { SERVER_HOST } from '../../shared/utils/server.util';
+import { deepOrange } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
   details: {
@@ -11,7 +13,8 @@ const useStyles = makeStyles(theme => ({
     height: 110,
     width: 100,
     flexShrink: 0,
-    flexGrow: 0
+    flexGrow: 0,
+    backgroundColor: deepOrange[500],
   },
   progress: {
     marginTop: theme.spacing(2)
@@ -23,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProfileCard(props) {
   const classes = useStyles();
-  const { user } = props;
+  const { user, handleUploadProfileOnClick, handleSaveProfileOnClick, prevImg } = props;
   return (
     <Card>
       <CardContent>
@@ -45,9 +48,12 @@ export default function ProfileCard(props) {
           </div>
           <Avatar
             className={classes.avatar}
-            // src={user.avatar}
+            src={prevImg
+                ? prevImg
+                : user.photo && `${SERVER_HOST}/${user.photo}`
+                }
           >
-            JP
+            {!user.photo && user.firstName.substring(0,2)}
           </Avatar>
         </div>
       </CardContent>
@@ -57,10 +63,17 @@ export default function ProfileCard(props) {
           className={classes.uploadButton}
           color="primary"
           variant="text"
+          onClick={handleUploadProfileOnClick}
         >
           Upload picture
         </Button>
-        <Button variant="text">Remove picture</Button>
+        <Button
+          variant="text"
+          color="primary"
+          onClick={handleSaveProfileOnClick}
+        >
+          Save picture
+        </Button>
       </CardActions>
     </Card>
   )

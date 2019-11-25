@@ -2,6 +2,9 @@ import React from 'react'
 import { Avatar, Typography, makeStyles } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import { SERVER_HOST } from '../../../shared/utils/server.util';
+import { deepOrange } from '@material-ui/core/colors';
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -13,7 +16,8 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     width: 60,
     height: 60,
-    margin: 'auto'
+    margin: 'auto',
+    backgroundColor: deepOrange[500],
   },
   name: {
     marginTop: theme.spacing(1)
@@ -30,7 +34,7 @@ export default function SidebarProfile(props) {
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
-        src={user.photo && user.photo }
+        src={user.photo && `${SERVER_HOST}/${user.photo}`}
         to="/app/profile"
       >
         {user && user.photo ? '' : user.firstName.substring(0,2)}

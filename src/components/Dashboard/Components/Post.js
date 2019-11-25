@@ -206,7 +206,6 @@ function Post(props) {
               </Button>
             </div>
           }
-          
         </CardContent>
       </Collapse>
     </Card>

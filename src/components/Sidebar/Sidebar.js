@@ -7,7 +7,6 @@ import {
   PostAdd as PostAddIcon,
   AccountCircle as AccountIcon,
   ExitToApp as ExitToAppIcon
-  // PhotoCamera as PhotoCameraIcon,
 } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { logout } from '../../shared/actions/actions';
@@ -38,7 +37,6 @@ const useStyles = makeStyles(theme => ({
 
 const Sidebar = (props) => {
   const { open, variant, onClose, className, user, adminId } = props;
-  console.log('adminid?', adminId);
   const classes = useStyles();
   const sidebarNav = [
     {
@@ -64,11 +62,6 @@ const Sidebar = (props) => {
       href: '/app/write-review',
       icon: <PostAddIcon />
     },
-    // {
-    //   title: 'Wrtie Post',
-    //   href: '/app/write-review',
-    //   icon: <PhotoCameraIcon />
-    // },
   ];
 
   const adminSidebarNav = [
@@ -115,7 +108,6 @@ const Sidebar = (props) => {
   // const isUser = user ? true : false;
   // const isAdmin = adminId ? true : false;
 
-  console.log('is logged in?',isLoggedIn);
   return (
     <Drawer
       anchor="left"

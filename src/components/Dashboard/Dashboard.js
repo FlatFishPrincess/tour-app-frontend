@@ -7,7 +7,6 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 class Dashboard extends Component {
-
   constructor(props) {
     super(props);
     this.state = {

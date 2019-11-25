@@ -22,6 +22,7 @@ export class Upload extends Component {
     this.fileInputRef = React.createRef();
     this.state = {
       images: [],
+      previewImg: [],
     }
   }
 
@@ -36,8 +37,8 @@ export class Upload extends Component {
   }
 
   createImageUrl = (files) => {
-    const images = files.map(file => URL.createObjectURL(file));
-    this.setState({ images }, () => console.log('images?? ',this.state.images));
+    const previewImg = files.map(file => URL.createObjectURL(file));
+    this.setState({ images: files, previewImg });
   }
   
   onDragOver = (event) => {
@@ -84,8 +85,8 @@ export class Upload extends Component {
   }
 
   render() {
-    const { hightlight, images } = this.state;
-    const { open, handleClose, classes, files } = this.props;
+    const { hightlight, images, previewImg } = this.state;
+    const { open, handleClose, classes } = this.props;
     return (
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth={true}>
         <DialogTitle>Upload Pictures</DialogTitle>
@@ -104,6 +105,7 @@ export class Upload extends Component {
               type="file"
               multiple
               onChange={this.onFilesAdded}
+              name='reviewImage'
             />
             <CloudUploadIcon />
             <span>Upload Files</span>
@@ -112,7 +114,7 @@ export class Upload extends Component {
             <Box>
               <div className={classes.previewWrapper}>
                 <GridList cellHeight={100} cols={3} spacing={1}>
-                  {images.map(img => (
+                  {previewImg.map(img => (
                     <GridListTile key={img} cols={1}>
                       <img src={img} alt='preview' className={classes.previewImg} />
                     </GridListTile>
@@ -134,7 +136,7 @@ export class Upload extends Component {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color="primary" type="submit">
             Upload
           </Button>
           <Button onClick={handleClose} color="primary">

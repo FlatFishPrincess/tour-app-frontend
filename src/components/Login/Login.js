@@ -57,7 +57,7 @@ class Login extends React.Component {
     this.setState({ activeTab });
   }
 
-  onClickegisterButton = e => {
+  onClickRegister = e => {
     e.preventDefault();
     const { activeTab, redirectToReferrer, snackbarOpen, ...data } = this.state;
     data["userId"] = `${data.username}123`;
@@ -71,13 +71,12 @@ class Login extends React.Component {
       data
     })
     .then(r => {
-      // console.log('response?', r);
-      this.setState({ snackbarOpen: true })
+      this.setState({ snackbarOpen: true, activeTab: 0 })
     })
     .catch(e => console.log(e))
   }
 
-  onClickeLoginButton = e => {
+  handleOnClickLoginButton = e => {
     e.preventDefault();
     const { isAdmin } = this.state;
     if (isAdmin) {
@@ -238,7 +237,7 @@ class Login extends React.Component {
                 />
               </FormGroup>
               <Button
-                onClick={this.onClickeLoginButton}
+                onClick={this.handleOnClickLoginButton}
                 variant="contained"
                 color="primary"
                 size="large"
@@ -305,7 +304,7 @@ class Login extends React.Component {
                 rows={3}
               />
               <Button
-                onClick={this.onClickegisterButton}
+                onClick={this.onClickRegister}
                 variant="contained"
                 color="primary"
                 size="large"
