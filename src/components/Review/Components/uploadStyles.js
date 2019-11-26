@@ -15,7 +15,7 @@ export const styles = theme => ({
     display: 'none',
   },
   hightlight: {
-    backgroundColor: 'rgb(188, 185, 236)',
+    backgroundColor: theme.palette.primary.main
   },
   wrapper: {
     display: "flex"

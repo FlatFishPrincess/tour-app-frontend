@@ -1,10 +1,11 @@
 import React from 'react';
-import { AppBar, Typography, Toolbar, IconButton, MenuItem, Menu } from '@material-ui/core';
+import { AppBar,  Toolbar, IconButton, MenuItem, Menu } from '@material-ui/core';
 import { Menu as MenuIcon, AccountCircle } from '@material-ui/icons';
-import { withRouter } from 'react-router-dom';
-import { fakeAuth } from '../../App';
+import { Link } from 'react-router-dom';
+// import { fakeAuth } from '../../App';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import LOGO from '../../static/LOGO2.png';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,11 +48,12 @@ export default function Header(props) {
     // <div className={classes.root}>
       <AppBar
        className={clsx(classes.root, className)}
+       color="secondary"
       >
       <Toolbar>
-        <Typography component="a" href='/app/dashboard' variant="h6" className={classes.title}>
-          Tour Review
-        </Typography>
+        <Link to="app/dashboard">
+          <img src={LOGO} width="220px" alt="logo"/>
+        </Link>
         <div className={classes.flexGrow} />
           <div>
             <IconButton
@@ -83,7 +85,6 @@ export default function Header(props) {
           </div>
       </Toolbar>
     </AppBar>
-    // </div>
   )
 }
       

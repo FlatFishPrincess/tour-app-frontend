@@ -110,65 +110,45 @@ const Review = (props) => {
     const createdDate = new Date().toISOString().substr(0,10);
     const { userId } = props;
     const CREATE_REVIEW_URL = 'http://localhost:3000/create/review';
-    const CREATE_PHOTO_URL = 'http://localhost:3000/create/uploads';
-    // const locationId = selectedLocation.value
-    // const data = {
-    //   createdDate: createdDate,
-    //   reviewDescription: description,
-    //   title: title,
-    //   userId: userId,
-    //   locationId: locationId,
-    //   rating: rating
-    // }
-    console.log(files,'ffiles?');
+    const locationId = selectedLocation.value
+
+    const data = {
+      createdDate: createdDate,
+      reviewDescription: description,
+      title: title,
+      userId: userId,
+      locationId: locationId,
+      rating: rating
+    }
+
     const formData = new FormData();
-    files.map(file => formData.append('reviewImage', file))
-    // formData.append('reviewImage',files[0]);
+    files.map(file => formData.append('reviewImages', file))
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
         }
     };
-    axios.post(CREATE_PHOTO_URL,formData,config)
-        .then((response) => {
-            alert("The file is successfully uploaded");
+
+    axios({
+      method: 'post',
+      url: CREATE_REVIEW_URL,
+      headers:{
+        'Accept': 'application/json',
+      },  
+      data
+    })
+    .then(r => {
+      // console.log('result', r.data);
+      const createdReviewId = r.data;
+      const CREATE_PHOTO_URL = `http://localhost:3000/create/uploads/${createdReviewId}`;
+      axios.post(CREATE_PHOTO_URL,formData,config)
+      .then((response) => {
+          console.log('result',r);
+          props.history.push("/app");
         }).catch((error) => {
-    });
-
-    // for (var key of data.entries()) {
-		// 	console.log('key?',key[0] + ', ' + key[1])
-		// }
-    // console.log('formdata?', data);
-    // axios({
-    //   method: 'post',
-    //   url: CREATE_PHOTO_URL,
-    //   headers:{
-    //     // 'Accept': 'application/json',
-    //     'content-type': 'multipart/form-data'
-    //   },  
-    //   data
-    // })
-    // .then(r => {
-    //   console.log('response?',r);
-    //   // props.history.push("/app");
-    // })
-    // .catch(e => console.log(e))
-    // console.log('data?', data);
-
-    // axios({
-    //   method: 'post',
-    //   url: CREATE_REVIEW_URL,
-    //   headers:{
-    //     'Accept': 'application/json',
-    //     'content-type': 'multipart/form-data'
-    //   },  
-    //   data
-    // })
-    // .then(r => {
-    //   props.history.push("/app");
-    // })
-    // .catch(e => console.log(e))
-    // console.log('data?', data);
+      });
+    })
+    .catch(e => console.log(e))
   }
 
   const renderUploadDialog = () => {
@@ -226,6 +206,7 @@ const Review = (props) => {
                 fullWidth
                 onChange={handleOnChangeTitleInput}
                 name='title'
+                color="primary"
                 />
             </Box>
             <Box m={2}>

@@ -1,16 +1,24 @@
 import React, { useEffect, useRef } from 'react'
-import { Box, makeStyles, Card, CardHeader, Avatar, IconButton, Collapse, CardMedia, CardContent, CardActions, Typography, TextField, Button } from '@material-ui/core';
+import { Box, makeStyles, Card, CardHeader, Avatar, IconButton, Collapse, CardMedia, CardContent, CardActions, Typography, TextField, Button, MobileStepper } from '@material-ui/core';
 import {
   MoreVert as MoreVertIcon,
   Favorite as FavoriteIcon,
   ExpandMore as ExpandMoreIcon,
   Comment as CommentIcon,
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  KeyboardArrowRight as KeyboardArrowRightIcon
 } from '@material-ui/icons';
 import Rating from '@material-ui/lab/Rating';
 import clsx from 'clsx';
 import axios from 'axios';
 import { deepOrange, red } from '@material-ui/core/colors';
 import Comment from './Comment';
+import SwipeableViews from 'react-swipeable-views';
+import { autoPlay } from 'react-swipeable-views-utils';
+import { SERVER_HOST } from '../../../shared/utils/server.util';
+
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -44,6 +52,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyConent: 'space-between'
   },
+  img: {
+    height: 255,
+    display: 'block',
+    overflow: 'hidden',
+    width: '100%',
+    objectFit: 'cover'
+  },
 }));
 
 
@@ -60,10 +75,13 @@ function Post(props) {
   const [expanded, setExpanded] = React.useState(false);
   const [user, setUser] = React.useState({});
   const [comments, setComments] = React.useState([]);
+  const [photos, setPhotos] = React.useState([]);
   const [fav, setFav] = React.useState(false);
   const [commentValue, setCommentValue] = React.useState('');
   const [isCommentUpdated, setIsCommentUpdated] = React.useState(false);
   const { review, handleSaveComment, storedUserId } = props;
+  const [activeStep, setActiveStep] = React.useState(0);
+  const maxSteps = photos.length;
 
   const prevCommentUpdated = usePrevious(isCommentUpdated);
 
@@ -72,6 +90,7 @@ function Post(props) {
     async function fetchUserAndComments() {
       await fetchUser();
       await fetchComment();
+      await fetchPhotos();
     }
     // Execute the created function directly
     fetchUserAndComments();
@@ -105,6 +124,17 @@ function Post(props) {
     })
   }
 
+  const fetchPhotos = () => {
+    const FETcH_REVIEW_PHOTOS = `http://localhost:3000/get/review/photo/${review.reviewId}`;
+    axios.get(FETcH_REVIEW_PHOTOS)
+    .then(res => {
+      setPhotos(res.data);
+    })
+    .catch(err => {
+      console.log('error occured,', err);
+    })
+  }
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -125,6 +155,67 @@ function Post(props) {
     setCommentValue(value);
   }
 
+  const handleNext = () => {
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
+  };
+
+  const handleStepChange = step => {
+    setActiveStep(step);
+  };
+
+  const renderPhotos = () => {
+    if(maxSteps === 0) {
+      return (
+        <CardMedia
+        className={classes.media}
+        image={`${SERVER_HOST}/public/shared/notfound.png`}
+      />
+      )
+    }
+    return (
+      <React.Fragment>
+      <AutoPlaySwipeableViews
+        axis='x'
+        index={activeStep}
+        onChangeIndex={handleStepChange}
+        enableMouseEvents
+      >
+        {photos.map((step, index) => (
+          <div >
+            {Math.abs(activeStep - index) <= 2 ? (
+              <img className={classes.img} src={`${SERVER_HOST}/${step.path}`} alt='Review Photos' />
+            ) : null}
+          </div>
+        ))}
+      </AutoPlaySwipeableViews>
+      <MobileStepper
+        steps={maxSteps}
+        position="static"
+        variant="text"
+        activeStep={activeStep}
+        nextButton={
+          <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
+            Next
+            <KeyboardArrowRightIcon />
+          </Button>
+        }
+        backButton={
+          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+            <KeyboardArrowLeftIcon />
+            Back
+          </Button>
+        }
+      />
+      </React.Fragment>
+    )
+  }
+
+  console.log('photos?', photos)
+
   return (
     <Card className={classes.card}>
       <CardHeader
@@ -141,11 +232,7 @@ function Post(props) {
         title={`${user.firstName} ${user.lastName}`}
         subheader={review.createdDate}
       />
-      <CardMedia
-        className={classes.media}
-        image="https://source.unsplash.com/user/simonmigaj/1600x900/"
-        title="Paella dish"
-      />
+      {renderPhotos()}
       <CardContent>
         <Typography gutterBottom paragraph>
           {review.title}

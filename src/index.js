@@ -32,3 +32,5 @@ ReactDOM.render(
   ,
   document.getElementById('root')
 );
+
+document.body.style = 'background: #f1f1f1;';

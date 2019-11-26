@@ -5,6 +5,7 @@ import Post from './Components/Post';
 import CountryList from './Components/CountryList';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import Loading from '../Global/Loading';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -13,13 +14,14 @@ class Dashboard extends Component {
       locations: [],
       reviews: [],
       isCommentUpdated: false,
+      loading: true,
     };
   }
 
   componentDidMount(){
     const GET_REVIEWS_API = 'http://localhost:3000/get/review';
     const GET_LOCATIONS_API = 'http://localhost:3000/get/location';
-
+    this.setState({ loading: true })
     axios.all([
       axios.get(GET_REVIEWS_API),
       axios.get(GET_LOCATIONS_API),
@@ -27,7 +29,7 @@ class Dashboard extends Component {
     .then(axios.spread((reviewReponse, locationReponse) => {
       const locations = locationReponse.data;
       const reviews = reviewReponse.data;
-      this.setState({ locations, reviews });
+      this.setState({ locations, reviews, loading: false });
     }));
   }
 
@@ -64,12 +66,15 @@ class Dashboard extends Component {
 
 
   render() {
+    if(this.state.loading ) {
+      return <Loading />
+    }
     const { classes, userId } = this.props;
     const { locations, reviews, isCommentUpdated } = this.state;
     return (
       <div className={classes.row}>
         <Grid container className={classes.grid} spacing={2}>
-          <CountryList locations={locations}/>
+          <CountryList locations={locations} />
         </Grid>
         <Grid container className={classes.grid} spacing={2}>
           <Grid item xs={3}>
