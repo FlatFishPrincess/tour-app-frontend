@@ -17,6 +17,13 @@ export function logout() {
   console.log('logout');
   return { type: LOGOUT }
 }
+
+export function getLocations() {
+  console.log('get locations - action');
+  return { type: GET_LOCATIONS }
+}
+
+
 export const STORE_USER = 'STORE_USER'
 
 export const STORE_USER_ID = 'STORE_USER_ID'
@@ -24,3 +31,7 @@ export const STORE_USER_ID = 'STORE_USER_ID'
 export const STORE_ADMIN = 'STORE_ADMIN'
 
 export const LOGOUT = 'LOGOUT'
+
+export const GET_LOCATIONS = 'GET_LOCATIONS'
+
+export const DONE_FETCH_LOCATIONS = 'DONE_FETCH_LOCATIONS'

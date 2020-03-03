@@ -221,6 +221,7 @@ class Login extends React.Component {
                 label="Username"
                 margin="normal"
                 name="username"
+                required
                 onChange={this.onChangeRegisterFields}
               />
               <TextField
@@ -228,6 +229,7 @@ class Login extends React.Component {
                 type="password"
                 margin="normal"
                 name="password"
+                required
                 onChange={this.onChangeRegisterFields}
               />
                <FormGroup>
@@ -266,6 +268,7 @@ class Login extends React.Component {
                   margin="normal"
                   onChangeRegisterFields
                   name="lastName"
+                  required
                   onChange={this.onChangeRegisterFields}
                 />
               </Box>
@@ -273,6 +276,7 @@ class Login extends React.Component {
                 label="Username"
                 margin="normal"
                 name="username"
+                required
                 onChange={this.onChangeRegisterFields}
               />
               <TextField
@@ -280,6 +284,7 @@ class Login extends React.Component {
                 type="password"
                 margin="normal"
                 name="password"
+                required
                 onChange={this.onChangeRegisterFields}
               />
               <TextField
@@ -287,6 +292,7 @@ class Login extends React.Component {
                 type="email"
                 margin="normal"
                 name="email"
+                required
                 onChange={this.onChangeRegisterFields}
               />
                <TextField

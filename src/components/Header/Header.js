@@ -51,7 +51,7 @@ export default function Header(props) {
        color="secondary"
       >
       <Toolbar>
-        <Link to="app/dashboard">
+        <Link to="/app/dashboard">
           <img src={LOGO} width="220px" alt="logo"/>
         </Link>
         <div className={classes.flexGrow} />
