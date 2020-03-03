@@ -7,6 +7,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import grey from '@material-ui/core/colors/grey';
+import Loading from '../../Global/Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,6 +35,9 @@ const useStyles = makeStyles(theme => ({
 export default function CountryList(props) {
   const classes = useStyles();
   const { locations } = props;
+  if (!locations) {
+    return <Loading />
+  }
   return (
     <div className={classes.root}>
       <Typography variant="h5">Explore Worlds</Typography>

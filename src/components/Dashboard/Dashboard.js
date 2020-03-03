@@ -6,6 +6,7 @@ import CountryList from './Components/CountryList';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import Loading from '../Global/Loading';
+import { getLocations } from '../../shared/actions/actions';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ class Dashboard extends Component {
     const { userId } = this.props;
     if(!userId) {
       // redirect to login page
-      alert('no user Id Found!');
+      // alert('no user Id Found!');
       return;
     }
     const CREATE_COMMENT_URL = 'http://localhost:3000/create/comment';
@@ -64,15 +65,21 @@ class Dashboard extends Component {
     .catch(e => console.log(e))
   }
 
+  handleSagaOnClick = () => {
+    const { getLocations } = this.props;
+    getLocations();
+  }
 
   render() {
-    if(this.state.loading ) {
-      return <Loading />
-    }
+    // if(this.state.loading ) {
+    //   return <Loading />
+    // }
+    console.log('location saga?', this.props.locationSaga);
     const { classes, userId } = this.props;
     const { locations, reviews, isCommentUpdated } = this.state;
     return (
       <div className={classes.row}>
+        <button onClick={this.handleSagaOnClick}>SAGA</button>
         <Grid container className={classes.grid} spacing={2}>
           <CountryList locations={locations} />
         </Grid>
@@ -96,8 +103,14 @@ class Dashboard extends Component {
   }
 }
 
+const mapDispatchToProps = {
+  getLocations
+}
+
 const mapStateToProps = state => ({
-  userId: state.users.userId
+  userId: state.users.userId,
+  locationSaga: state.locations.locations,
+  loading: state.locations.loading
 });
 
-export default connect(mapStateToProps, null)(withStyles(styles)(Dashboard));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard));
