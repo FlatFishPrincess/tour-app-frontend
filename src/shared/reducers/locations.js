@@ -1,4 +1,4 @@
-import { GET_LOCATIONS, DONE_FETCH_LOCATIONS } from '../actions/actions';
+import { GET_LOCATIONS, DONE_FETCH_LOCATIONS } from '../actions';
 
 const initialState = {};
 

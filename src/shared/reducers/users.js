@@ -1,4 +1,4 @@
-import { STORE_USER, STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions/actions';
+import { STORE_USER, STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions';
 
 const initialState = {};
 

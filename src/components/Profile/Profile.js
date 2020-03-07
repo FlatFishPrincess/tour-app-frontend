@@ -4,7 +4,7 @@ import ProfileCard from './ProfileCard';
 import ProfileDetail from './ProfileDetail';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { addUser } from '../../shared/actions/actions';
+import { addUser } from '../../shared/actions';
 import ProfileSnackbar from './ProfileSnackbar';
 import AccessDeniedDialog from '../Global/AccessDeniedDialog';
 import Upload from '../Review/Components/Upload';

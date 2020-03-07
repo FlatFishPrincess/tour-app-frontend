@@ -6,7 +6,7 @@ import CountryList from './Components/CountryList';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import Loading from '../Global/Loading';
-import { getLocations } from '../../shared/actions/actions';
+import { getLocations } from '../../shared/actions';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -65,10 +65,10 @@ class Dashboard extends Component {
     .catch(e => console.log(e))
   }
 
-  handleSagaOnClick = () => {
-    const { getLocations } = this.props;
-    getLocations();
-  }
+  // handleSagaOnClick = () => {
+  //   const { getLocations } = this.props;
+  //   getLocations();
+  // }
 
   render() {
     // if(this.state.loading ) {
@@ -79,7 +79,6 @@ class Dashboard extends Component {
     const { locations, reviews, isCommentUpdated } = this.state;
     return (
       <div className={classes.row}>
-        <button onClick={this.handleSagaOnClick}>SAGA</button>
         <Grid container className={classes.grid} spacing={2}>
           <CountryList locations={locations} />
         </Grid>

@@ -9,7 +9,7 @@ import {
   ExitToApp as ExitToAppIcon
 } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { logout } from '../../shared/actions/actions';
+import { logout } from '../../shared/actions';
 import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({

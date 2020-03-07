@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { addUserId, addUser, addAdminId } from '../../shared/actions/actions';
+import { addUserId, addUser, addAdminId } from '../../shared/actions';
 
 const TabPanel = (props) => {
   const { children, activeTab, index, ...other } = props;
@@ -113,8 +113,7 @@ class Login extends React.Component {
   renderAdminLogin = () => {
     const { username, password } = this.state;
     // FIXME: force to make a userID
-    const adminId = `${username}123`;
-    const LOGIN_ADMIN_URL = 'http://localhost:3000/login/admin';
+    const LOGIN_ADMIN_URL = `${process.env.REACT_APP_FETCH_BASE_URL}/login/admin`;
     axios({
       method: 'post',
       url: LOGIN_ADMIN_URL,
@@ -122,7 +121,7 @@ class Login extends React.Component {
         'Accept': 'application/json'
       },  
       data: {
-        adminId: adminId,
+        adminId: username,
         adminpassword: password
       }
     })
