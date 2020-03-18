@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { addUserId, addUser, addAdminId } from '../../shared/actions';
+import { addUserId, addUser, addAdminId, loginAdmin } from '../../shared/actions';
 
 const TabPanel = (props) => {
   const { children, activeTab, index, ...other } = props;
@@ -110,29 +110,31 @@ class Login extends React.Component {
     .catch(e => console.log(e))
   }
 
-  renderAdminLogin = () => {
+  renderAdminLogin = async() => {
     const { username, password } = this.state;
     // FIXME: force to make a userID
-    const LOGIN_ADMIN_URL = `${process.env.REACT_APP_FETCH_BASE_URL}/login/admin`;
-    axios({
-      method: 'post',
-      url: LOGIN_ADMIN_URL,
-      headers:{
-        'Accept': 'application/json'
-      },  
-      data: {
-        adminId: username,
-        adminpassword: password
-      }
-    })
-    .then(r => {
-      this.props.addAdminId(r.data);
-      // FIXME: force to set null user
-      this.props.addUserId(null);
-      this.props.addUser(null);
-      this.props.history.push('/admin/dashboard');
-    })
-    .catch(e => console.log(e))
+    const adminId = await this.props.loginAdmin(username, password);
+    this.props.addAdminId(adminId);
+    this.props.history.push('/admin/dashboard');
+    // axios({
+    //   method: 'post',
+    //   url: LOGIN_ADMIN_URL,
+    //   headers:{
+    //     'Accept': 'application/json'
+    //   },  
+    //   data: {
+    //     adminId: username,
+    //     adminpassword: password
+    //   }
+    // })
+    // .then(r => {
+    //   this.props.addAdminId(r.data);
+    //   // FIXME: force to set null user
+    //   this.props.addUserId(null);
+    //   this.props.addUser(null);
+    //   this.props.history.push('/admin/dashboard');
+    // })
+    // .catch(e => console.log(e))
   }
 
   onChangeRegisterFields = e => {
@@ -329,7 +331,8 @@ class Login extends React.Component {
 const mapDispatchToProps = {
   addUserId,
   addUser,
-  addAdminId
+  addAdminId,
+  loginAdmin
 }
 
 // const mapStateToProps = ({ users }) => {
