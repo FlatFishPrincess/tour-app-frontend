@@ -18,11 +18,6 @@ export function logout() {
   return { type: LOGOUT }
 }
 
-export function getLocations() {
-  console.log('get locations - action');
-  return { type: GET_LOCATIONS }
-}
-
 export function loginAdmin(username, password) {
   return { type: REQUEST_ADMIN_LOGIN, data: {username, password} }
 }
@@ -36,9 +31,6 @@ export const STORE_ADMIN = 'STORE_ADMIN'
 
 export const LOGOUT = 'LOGOUT'
 
-export const GET_LOCATIONS = 'GET_LOCATIONS'
-
-export const DONE_FETCH_LOCATIONS = 'DONE_FETCH_LOCATIONS'
 
 export const REQUEST_ADMIN_LOGIN = 'REQUEST_ADMIN_LOGIN'
 

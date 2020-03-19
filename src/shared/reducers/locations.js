@@ -1,37 +1,28 @@
-import { GET_LOCATIONS, DONE_FETCH_LOCATIONS } from '../actions';
+import { REQUEST_LOCATIONS, SUCCESS_LOCATIONS, REQUEST_CREATE_LOCATIONS } from '../actions/location-action';
 
 const initialState = {};
 
 const locations = (state = {}, action) => {
   switch (action.type) {
-    case GET_LOCATIONS:
+    case REQUEST_LOCATIONS:
       console.log('reducer in locations?', action);
       return {
         ...state,
         loading: true
       };
-    case DONE_FETCH_LOCATIONS:
+    case SUCCESS_LOCATIONS:
       console.log('reducer fetched in locations?', action);
       return {
         ...state,
         loading: false,
         locations: action.locations
       };
-    // case STORE_USER:
-    //   console.log('reducer', action);
-    //   return {
-    //     ...state,
-    //     user: action.user,
-    //   }
-    // case STORE_ADMIN:
-    //     console.log('reducer', action);
-    //     return {
-    //       ...state,
-    //       adminId: action.adminId,
-    //     }
-    // case LOGOUT:
-    //     console.log('reducer');
-    //     return {};
+    case REQUEST_CREATE_LOCATIONS:
+      return {
+        ...state,
+        loading: false
+        // location: action.data
+      };
     default:
       return state;
   }

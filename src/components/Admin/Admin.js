@@ -6,30 +6,22 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import AdminSnackbar from './Components/AdminSnackbar';
 import UserTable from './Components/UserTable';
+import { getLocations, createLocation } from '../../shared/actions/location-action';
 
 const Admin = (props) => {
-  const [locations, setLocations] = useState([]);
   const [users, setUsers] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    async function fetchUsersAndLocations() {
-      await fetchLocations();
-      await fetchUsers();
+    function fetchUsersAndLocations() {
+      props.getLocations();
+      fetchUsers();
     }
     fetchUsersAndLocations();
-
   }, []);
 
   const fetchLocations = () => {
-    const FETCH_LOCATION_URL = `http://localhost:3000/get/location`;
-    axios.get(FETCH_LOCATION_URL)
-    .then(res => {
-      setLocations(res.data)
-    })
-    .catch(err => {
-      console.log('error occured,', err);
-    })
+    props.getLocations();
   }
 
   const fetchUsers = () => {
@@ -43,22 +35,13 @@ const Admin = (props) => {
     })
   }
 
-  const handleSaveLocation = (data) => {
-    console.log('will be saved loc? ',data);
-    const CREATE_LOCATION_URL = 'http://localhost:3000/create/location';
-    axios({
-      method: 'post',
-      url: CREATE_LOCATION_URL,
-      headers:{
-        'Accept': 'application/json'
-      },  
-      data
-    })
-    .then(r => {
+  const handleSaveLocation = async (data) => {
+    try{
+      await props.createLocation(data);
       setOpenSnackbar(true);
-      setLocations([...locations, data]);
-    })
-    .catch(e => console.log(e))
+    } catch(e){
+      console.log(e);
+    }
   }
 
   const handleCloseSnackbar = () => {
@@ -83,7 +66,7 @@ const Admin = (props) => {
         <UserTable users={users}/>
       </Grid>
       <Grid item lg={12} md={12} xl={12} xs={12}>
-        <LocationTable locations={locations}/>
+        <LocationTable locations={props.locations}/>
       </Grid>
       {renderUpdateSnackbar()}
     </Grid>
@@ -91,7 +74,13 @@ const Admin = (props) => {
 }
 
 const mapStateToProps = state => ({
-  adminId: state.users.adminId
+  adminId: state.users.adminId,
+  locations: state.locations.locations
 });
 
-export default connect(mapStateToProps, null)(Admin);
+const mapDispatchToProps = {
+  getLocations,
+  createLocation
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Admin);

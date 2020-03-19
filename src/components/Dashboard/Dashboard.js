@@ -6,7 +6,7 @@ import CountryList from './Components/CountryList';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import Loading from '../Global/Loading';
-import { getLocations } from '../../shared/actions';
+// import { getLocations } from '../../shared/location-action';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -103,7 +103,7 @@ class Dashboard extends Component {
 }
 
 const mapDispatchToProps = {
-  getLocations
+  // getLocations
 }
 
 const mapStateToProps = state => ({
