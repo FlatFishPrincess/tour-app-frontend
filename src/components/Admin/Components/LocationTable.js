@@ -14,6 +14,7 @@ const useStyles = makeStyles({
 export default function LocationTable(props) {
   const classes = useStyles();
   const { locations } = props;
+  if(!locations) return (<div>No locations display</div>)
   return (
     <Paper className={classes.root}>
       <Typography variant="h5" gutterBottom>Location Table</Typography>

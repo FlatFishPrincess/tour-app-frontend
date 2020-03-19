@@ -1,4 +1,5 @@
 import { STORE_USER, STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions';
+import { REQUEST_FETCH_USER } from '../actions/auth-action';
 
 const initialState = {};
 
@@ -25,6 +26,11 @@ const users = (state = {}, action) => {
     case LOGOUT:
         console.log('reducer');
         return {};
+    case REQUEST_FETCH_USER:
+        return {
+          ...state,
+          loading: true
+        }
     default:
       return state;
   }

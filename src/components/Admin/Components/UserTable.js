@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 export default function UserTable(props) {
   const classes = useStyles();
   const { users } = props;
+  if(!users) return (<div>No users to display</div>)
   return (
     <Paper className={classes.root}>
       <Typography variant="h5" gutterBottom>User Table</Typography>
