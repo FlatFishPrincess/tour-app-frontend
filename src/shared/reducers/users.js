@@ -1,5 +1,6 @@
-import { STORE_USER, STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions';
+import { STORE_USER_ID, STORE_ADMIN, LOGOUT } from '../actions';
 import { REQUEST_FETCH_USER } from '../actions/auth-action';
+import { STORE_USER } from '../actions/auth-action';
 
 const initialState = {};
 
@@ -11,18 +12,18 @@ const users = (state = {}, action) => {
         ...state,
         userId: action.userId,
       }
-    case STORE_USER:
-      console.log('reducer', action);
-      return {
-        ...state,
-        user: action.user,
-      }
     case STORE_ADMIN:
         console.log('reducer', action);
         return {
           ...state,
           adminId: action.adminId,
         }
+    case STORE_USER:
+      console.log('test?', action);
+      return {
+        ...state,
+        user: action.user
+      }
     case LOGOUT:
         console.log('reducer');
         return {};

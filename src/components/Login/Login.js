@@ -2,18 +2,11 @@ import React from "react";
 import {
   Grid,
   withStyles,
-  Typography,
-  Button,
-  TextField,
   Tabs,
   Tab,
-  Box,
   Snackbar,
   SnackbarContent,
-  IconButton,
-  FormGroup,
-  FormControlLabel,
-  Switch
+  IconButton
 } from "@material-ui/core";
 import { withRouter, Redirect } from "react-router-dom";
 import { styles } from './styles';
@@ -21,35 +14,15 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { addUserId, addUser, addAdminId, loginAdmin } from '../../shared/actions';
-
-const TabPanel = (props) => {
-  const { children, activeTab, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      hidden={activeTab !== index}
-      {...other}
-    >
-      <Box flexDirection="column" display="flex" p={3} width="350px" margin="auto">{children}</Box>
-    </Typography>
-  );
-}
+import { addUserId, addAdminId, loginAdmin } from '../../shared/actions';
+import SignIn from "./Components/SignIn";
+import Register from "./Components/Register";
+import { createUser, loginUser } from '../../shared/actions/auth-action';
 
 class Login extends React.Component {
   state = {
     redirectToReferrer: false,
     activeTab: 0,
-    snackbarOpen: false,
-    "userId":"",
-    "username": "",
-    "password": "",
-    "firstName": "",
-    "lastName": "",
-    "email": "",
-    "phoneNum": "",
-    "profile": "",
     isAdmin: false
   }
 
@@ -57,23 +30,16 @@ class Login extends React.Component {
     this.setState({ activeTab });
   }
 
-  onClickRegister = e => {
+  onClickRegister = async (e) => {
     e.preventDefault();
     const { activeTab, redirectToReferrer, snackbarOpen, ...data } = this.state;
-    data["userId"] = `${data.username}123`;
-    const REGISTER_USER_URL = 'http://localhost:3000/create/user';
-    axios({
-      method: 'post',
-      url: REGISTER_USER_URL,
-      headers:{
-        'Accept': 'application/json'
-      },  
-      data
-    })
-    .then(r => {
+    data["userId"] = data.username; // FIXME:  should be handled in backend
+    try{
+      await this.props.createUser(data);
       this.setState({ snackbarOpen: true, activeTab: 0 })
-    })
-    .catch(e => console.log(e))
+    } catch(e){
+      console.log(e);
+    }
   }
 
   handleOnClickLoginButton = e => {
@@ -86,28 +52,32 @@ class Login extends React.Component {
     }
   }
 
-  renderUserLogin = () => {
+  renderUserLogin = async () => {
     const { username, password } = this.state;
-    // FIXME: force to make a userID
-    const userId = `${username}123`;
-    const LOGIN_USER_URL = 'http://localhost:3000/login/user';
-    axios({
-      method: 'post',
-      url: LOGIN_USER_URL,
-      headers:{
-        'Accept': 'application/json'
-      },  
-      data: {
-        userId: userId,
-        password: password
-      }
-    })
-    .then(r => {
-      this.props.addUserId(r.data[0].userId);
-      this.props.addUser(r.data[0]);
+    try{
+      await this.props.loginUser(username, password);
       this.setState({ redirectToReferrer: true })
-    })
-    .catch(e => console.log(e))
+    } catch(e){
+      console.log(e);
+    }
+    // const LOGIN_USER_URL = 'http://localhost:3000/login/user';
+    // axios({
+    //   method: 'post',
+    //   url: LOGIN_USER_URL,
+    //   headers:{
+    //     'Accept': 'application/json'
+    //   },  
+    //   data: {
+    //     username: username,
+    //     password: password
+    //   }
+    // })
+    // .then(r => {
+    //   this.props.addUserId(r.data[0].userId);
+    //   this.props.addUser(r.data[0]);
+    //   this.setState({ redirectToReferrer: true })
+    // })
+    // .catch(e => console.log(e))
   }
 
   renderAdminLogin = async() => {
@@ -182,9 +152,37 @@ class Login extends React.Component {
     }));
   }
 
+  renderSignInPanel = () => {
+    const { classes } = this.props;
+    const { activeTab, isAdmin } = this.state;
+    return (
+      <SignIn
+        activeTab={activeTab}
+        classes={classes}
+        isAdmin={isAdmin}
+        handleOnChangeAuth={this.handleOnChangeAuth}
+        onChangeRegisterFields={this.onChangeRegisterFields}
+        handleOnClickLoginButton={this.handleOnClickLoginButton}
+      />
+    );
+  }
+
+  renderRegisterPanel = () => {
+    const { classes } = this.props;
+    const { activeTab } = this.state;
+    return (
+      <Register
+        activeTab={activeTab}
+        classes={classes}
+        onChangeRegisterFields={this.onChangeRegisterFields}
+        onClickRegister={this.onClickRegister}
+      />
+    );
+  }
+
   render() {
     const { classes } = this.props;
-    const { redirectToReferrer, activeTab, isAdmin } = this.state
+    const { redirectToReferrer, activeTab } = this.state
     const { from } = this.props.location.state || { from: {pathname: "/" }}
     if(redirectToReferrer === true) {
       return (
@@ -211,115 +209,8 @@ class Login extends React.Component {
                 <Tab label="Register" />
               </Tabs>
             </div>
-            <TabPanel activeTab={activeTab} index={0}>
-              <Typography variant="h3" className={classes.greeting}>
-                Welcome!
-              </Typography>
-              <Typography variant="h4" className={classes.subGreeting}>
-                Sign In
-              </Typography>
-              <TextField
-                label="Username"
-                margin="normal"
-                name="username"
-                required
-                onChange={this.onChangeRegisterFields}
-              />
-              <TextField
-                label="Password"
-                type="password"
-                margin="normal"
-                name="password"
-                required
-                onChange={this.onChangeRegisterFields}
-              />
-               <FormGroup>
-                <FormControlLabel
-                  control={<Switch checked={isAdmin} onChange={this.handleOnChangeAuth} />}
-                  label={!isAdmin ? 'User' : 'Admin'}
-                />
-              </FormGroup>
-              <Button
-                onClick={this.handleOnClickLoginButton}
-                variant="contained"
-                color="primary"
-                size="large"
-                className={classes.signInButton}
-              >
-                Log in
-              </Button>
-            </TabPanel>
-            <TabPanel activeTab={activeTab} index={1}>
-              <Typography variant="h3" className={classes.greeting}>
-                Welcome!
-              </Typography>
-              <Typography variant="h4" className={classes.subGreeting}>
-                Register
-              </Typography>
-              <Box display="flex" justifyContent="space-between">
-                <TextField
-                  label="First Name"
-                  margin="normal"
-                  name="firstName"
-                  required
-                  onChange={this.onChangeRegisterFields}
-                />
-                <TextField
-                  label="Last Name"
-                  margin="normal"
-                  onChangeRegisterFields
-                  name="lastName"
-                  required
-                  onChange={this.onChangeRegisterFields}
-                />
-              </Box>
-              <TextField
-                label="Username"
-                margin="normal"
-                name="username"
-                required
-                onChange={this.onChangeRegisterFields}
-              />
-              <TextField
-                label="Password"
-                type="password"
-                margin="normal"
-                name="password"
-                required
-                onChange={this.onChangeRegisterFields}
-              />
-              <TextField
-                label="email"
-                type="email"
-                margin="normal"
-                name="email"
-                required
-                onChange={this.onChangeRegisterFields}
-              />
-               <TextField
-                label="Phone Number"
-                margin="normal"
-                name="phoneNum"
-                onChange={this.onChangeRegisterFields}
-              />
-              <TextField
-                label="Type your Personal Fav or anything!"
-                margin="normal"
-                name="profile"
-                onChange={this.onChangeRegisterFields}
-                multiline
-                rows={3}
-              />
-              <Button
-                onClick={this.onClickRegister}
-                variant="contained"
-                color="primary"
-                size="large"
-                className={classes.signInButton}
-              >
-                Register
-              </Button>
-            </TabPanel>
+            {this.renderSignInPanel()}
+            {this.renderRegisterPanel()}
           </div>
         </div>
         {this.onPopupSnackbar()}
@@ -330,9 +221,10 @@ class Login extends React.Component {
 
 const mapDispatchToProps = {
   addUserId,
-  addUser,
   addAdminId,
-  loginAdmin
+  loginAdmin,
+  createUser,
+  loginUser
 }
 
 // const mapStateToProps = ({ users }) => {

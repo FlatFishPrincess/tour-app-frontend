@@ -4,7 +4,7 @@ import ProfileCard from './ProfileCard';
 import ProfileDetail from './ProfileDetail';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { addUser } from '../../shared/actions';
+// import { addUser } from '../../shared/actions';
 import ProfileSnackbar from './ProfileSnackbar';
 import AccessDeniedDialog from '../Global/AccessDeniedDialog';
 import Upload from '../Review/Components/Upload';
@@ -71,10 +71,10 @@ const Profile = (props) => {
 
   const fetchUpdatedUser = () => {
     const FETCH_USER = `http://localhost:3000/get/user/${user.userId}`
-    const { addUser } = props;
+    // const { addUser } = props;
     axios.get(FETCH_USER)
     .then(res => {
-      addUser(res.data[0]);
+      // addUser(res.data[0]);
       setOpenSnackbar(true);
     })
     .catch(err => {
@@ -138,7 +138,7 @@ const Profile = (props) => {
 }
 
 const mapDispatchToProps = {
-  addUser
+  // addUser
 }
 
 const mapStateToProps = state => ({
