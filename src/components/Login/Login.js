@@ -60,24 +60,6 @@ class Login extends React.Component {
     } catch(e){
       console.log(e);
     }
-    // const LOGIN_USER_URL = 'http://localhost:3000/login/user';
-    // axios({
-    //   method: 'post',
-    //   url: LOGIN_USER_URL,
-    //   headers:{
-    //     'Accept': 'application/json'
-    //   },  
-    //   data: {
-    //     username: username,
-    //     password: password
-    //   }
-    // })
-    // .then(r => {
-    //   this.props.addUserId(r.data[0].userId);
-    //   this.props.addUser(r.data[0]);
-    //   this.setState({ redirectToReferrer: true })
-    // })
-    // .catch(e => console.log(e))
   }
 
   renderAdminLogin = async() => {

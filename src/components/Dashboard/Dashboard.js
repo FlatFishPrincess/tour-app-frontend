@@ -5,33 +5,20 @@ import Post from './Components/Post';
 import CountryList from './Components/CountryList';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import Loading from '../Global/Loading';
-// import { getLocations } from '../../shared/location-action';
+import { getReviews } from '../../shared/actions/review-action';
+import { getLocations } from '../../shared/actions/location-action';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      locations: [],
-      reviews: [],
-      isCommentUpdated: false,
-      loading: true,
+      isCommentUpdated: false
     };
   }
 
   componentDidMount(){
-    const GET_REVIEWS_API = 'http://localhost:3000/get/review';
-    const GET_LOCATIONS_API = 'http://localhost:3000/get/location';
-    this.setState({ loading: true })
-    axios.all([
-      axios.get(GET_REVIEWS_API),
-      axios.get(GET_LOCATIONS_API),
-    ])
-    .then(axios.spread((reviewReponse, locationReponse) => {
-      const locations = locationReponse.data;
-      const reviews = reviewReponse.data;
-      this.setState({ locations, reviews, loading: false });
-    }));
+    this.props.getReviews();
+    this.props.getLocations();
   }
 
   handlePostCommentOnSave = (comment, reviewId) => {
@@ -65,28 +52,20 @@ class Dashboard extends Component {
     .catch(e => console.log(e))
   }
 
-  // handleSagaOnClick = () => {
-  //   const { getLocations } = this.props;
-  //   getLocations();
-  // }
-
   render() {
-    // if(this.state.loading ) {
-    //   return <Loading />
-    // }
-    console.log('location saga?', this.props.locationSaga);
-    const { classes, userId } = this.props;
-    const { locations, reviews, isCommentUpdated } = this.state;
+    console.log('location saga?', this.props.locations);
+    const { classes, userId, locations, reviews, locationLoading } = this.props;
+    const { isCommentUpdated } = this.state;
     return (
       <div className={classes.row}>
         <Grid container className={classes.grid} spacing={2}>
-          <CountryList locations={locations} />
+          <CountryList locationLoading={locationLoading} locations={locations} />
         </Grid>
         <Grid container className={classes.grid} spacing={2}>
           <Grid item xs={3}>
           </Grid>
           <Grid item xs={6}>
-            {reviews.map(review => (
+            {reviews && reviews.map(review => (
               <Post
                 review={review}
                 key={review.reviewId}
@@ -103,13 +82,15 @@ class Dashboard extends Component {
 }
 
 const mapDispatchToProps = {
-  // getLocations
+  getLocations,
+  getReviews
 }
 
 const mapStateToProps = state => ({
   userId: state.users.userId,
-  locationSaga: state.locations.locations,
-  loading: state.locations.loading
+  locations: state.locations.locations,
+  locationLoading: state.locations.loading,
+  reviews: state.reviews.reviews
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard));

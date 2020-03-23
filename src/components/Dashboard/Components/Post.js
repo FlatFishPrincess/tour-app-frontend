@@ -1,5 +1,20 @@
 import React, { useEffect, useRef } from 'react'
-import { Box, makeStyles, Card, CardHeader, Avatar, IconButton, Collapse, CardMedia, CardContent, CardActions, Typography, TextField, Button, MobileStepper } from '@material-ui/core';
+import {
+  Box,
+  makeStyles,
+  Card,
+  CardHeader,
+  Avatar,
+  IconButton,
+  Collapse,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Typography,
+  TextField,
+  Button,
+  MobileStepper
+} from '@material-ui/core';
 import {
   MoreVert as MoreVertIcon,
   Favorite as FavoriteIcon,
@@ -213,8 +228,6 @@ function Post(props) {
       </React.Fragment>
     )
   }
-
-  console.log('photos?', photos)
 
   return (
     <Card className={classes.card}>

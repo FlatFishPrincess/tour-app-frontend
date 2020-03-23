@@ -34,8 +34,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function CountryList(props) {
   const classes = useStyles();
-  const { locations } = props;
-  if (!locations) {
+  const { locations, locationLoading } = props;
+  if (!locations || locationLoading) {
     return <Loading />
   }
   return (

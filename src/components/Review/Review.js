@@ -3,9 +3,10 @@ import Select from 'react-select';
 import { makeStyles, Paper, Typography, Box, Container, TextField, Button } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import Upload from './Components/Upload';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import AccessDeniedDialog from '../Global/AccessDeniedDialog';
+import { createReview } from '../../shared/actions/review-action';
+import { getLocations } from '../../shared/actions/location-action';
 
 const labels = {
   0.5: 'Useless',
@@ -42,31 +43,15 @@ const Review = (props) => {
   const [rating, setRating] = React.useState(-1);
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
   const [files, setFiles] = React.useState([]);
-  const [locations, setLocations] = React.useState([]);
   const [title, setTitleValue] = React.useState('');
   const [description, setDescriptionValue] = React.useState('[]');
   const classes = useStyles();
   
   useEffect(() => {
-    async function fetchDefaultLocations() {
-      await fetchLocations();
-    }
-
-    fetchDefaultLocations();
+    getLocations();
   }, []);
 
-  const fetchLocations = () => {
-    const FETCH_LOCATIONS = 'http://localhost:3000/get/location'
-    axios.get(FETCH_LOCATIONS)
-    .then(res => {
-      setLocations(res.data);
-    })
-    .catch(err => {
-      console.log('error occured,', err);
-    })
-  }
-
-  const suggestions = locations.map(location => ({
+  const suggestions = props.locations.map(location => ({
       label: `${location.name} (${location.country})`,
       value: location.locationId,
   }));
@@ -106,49 +91,29 @@ const Review = (props) => {
     setDescriptionValue(value);
   }
 
-  const handleOnClickSaveReview = () => {
+  const handleOnClickSaveReview = async () => {
     const createdDate = new Date().toISOString().substr(0,10);
-    const { userId } = props;
-    const CREATE_REVIEW_URL = 'http://localhost:3000/create/review';
+    const { user } = props;
     const locationId = selectedLocation.value
-
     const data = {
       createdDate: createdDate,
       reviewDescription: description,
       title: title,
-      userId: userId,
+      userId: user.userId,
       locationId: locationId,
       rating: rating
     }
 
     const formData = new FormData();
-    files.map(file => formData.append('reviewImages', file))
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-    };
-
-    axios({
-      method: 'post',
-      url: CREATE_REVIEW_URL,
-      headers:{
-        'Accept': 'application/json',
-      },  
-      data
-    })
-    .then(r => {
-      // console.log('result', r.data);
-      const createdReviewId = r.data;
-      const CREATE_PHOTO_URL = `http://localhost:3000/create/uploads/${createdReviewId}`;
-      axios.post(CREATE_PHOTO_URL,formData,config)
-      .then((response) => {
-          console.log('result',r);
-          props.history.push("/app");
-        }).catch((error) => {
-      });
-    })
-    .catch(e => console.log(e))
+    files.map(file => formData.append('image', file))
+    console.log('form data?',Array.from(formData));
+    try{
+      await props.createReview(data, formData);
+      props.history.push("/app");
+    } catch(e){
+      console.log(e);
+    }
+   
   }
 
   const renderUploadDialog = () => {
@@ -162,7 +127,7 @@ const Review = (props) => {
     )
   }
 
-  if(!props.userId) {
+  if(!props.user) {
     return (
       <AccessDeniedDialog />
     );
@@ -243,8 +208,16 @@ const Review = (props) => {
   )
 }
 
+const mapDispatchToProps = {
+  createReview,
+  getLocations
+}
+
+
 const mapStateToProps = state => ({
-  userId: state.users.userId
+  userId: state.users.userId,
+  user: state.users.user,
+  locations: state.locations.locations
 });
 
-export default connect(mapStateToProps, null)(Review);
+export default connect(mapStateToProps, mapDispatchToProps)(Review);
